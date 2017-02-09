@@ -130,11 +130,20 @@ public class TypeConversions {
      *  * -> false
      */
     public Boolean asBoolean(Object value) {
-        Boolean result = null;//Boolean.FALSE;
+        Boolean result = null;
         if( value instanceof Boolean ) {
             result = (Boolean)value;
         }
-        else {
+        else if( value instanceof String ) {
+            if( "true".equals( value ) ) {
+                result = true;
+            }
+            else if( "false".equals( value ) ) {
+                result = false;
+            }
+            // Else fall through to following conditional.
+        }
+        if( result == null ) {
             Number nvalue = asNumber( value );
             if( nvalue != null ) {
                 // Any non-zero integer value evaluates to true.
