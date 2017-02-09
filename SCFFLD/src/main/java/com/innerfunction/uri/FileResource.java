@@ -33,7 +33,7 @@ public class FileResource extends Resource {
     private static final String LogTag = FileResource.class.getSimpleName();
 
     /** The file being represented. */
-    private File file;
+    protected File file;
 
     public FileResource(Context context, File file, CompoundURI uri) {
         super( context, file, uri );

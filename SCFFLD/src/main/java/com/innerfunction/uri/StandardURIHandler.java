@@ -30,9 +30,6 @@ import java.net.URISyntaxException;
  * A class for handling internal URIs.
  * Supports resolution of relative URIs to absolute, and dereferencing of URIs to their
  * referred values.
- * TODO Is a separate URIHandler interface really necessary? If not then get rid of it and rename
- * TODO this class to URIHandler; otherwise consider adding formats and aliases properties to the
- * TODO interface.
  */
 public class StandardURIHandler implements URIHandler {
 
@@ -79,14 +76,17 @@ public class StandardURIHandler implements URIHandler {
      *     <li><b>cache:</b> For accessing files in the app's cache location.</li>
      *     <li><b>local:</b> For accessing values in the app's local storage.</li>
      *     <li><b>repr:</b> For accessing non-default value representations.</li>
+     *     <li><b>dirmap:</b> For loading JSON configurations from the filesystem.</li>
      * </ul>
      */
     public StandardURIHandler(Context context, Assets assets) {
-        schemeHandlers.put("s",     new StringScheme( context ) );
-        schemeHandlers.put("app",   new AnRBasedScheme( context, assets ) );
-        schemeHandlers.put("cache", new FileBasedScheme( context, Files.getCacheDir( context )));
-        schemeHandlers.put("local", new LocalScheme(context));
-        schemeHandlers.put("repr",  new ReprScheme(context));
+        schemeHandlers.put("s",      new StringScheme( context ) );
+        schemeHandlers.put("app",    new AnRBasedScheme( context, assets ) );
+        schemeHandlers.put("cache",  new FileBasedScheme( context, Files.getCacheDir( context )));
+        schemeHandlers.put("local",  new LocalScheme( context ) );
+        schemeHandlers.put("repr",   new ReprScheme( context ) );
+        // Load dirmap files from the same location as app:
+        schemeHandlers.put("dirmap", new DirmapScheme( context, assets, "" ) );
     }
 
     public Assets getAssets() {
