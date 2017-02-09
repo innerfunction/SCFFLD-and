@@ -10,7 +10,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/scfflfd" />
+            <option value="$PROJECT_DIR$/scffld" />
+            <option value="$PROJECT_DIR$/scffld/atableview" />
           </set>
         </option>
       </GradleProjectSettings>

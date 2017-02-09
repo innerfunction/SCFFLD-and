@@ -24,9 +24,9 @@ import com.innerfunction.scffld.R;
 /**
  * Attached by juliangoacher on 26/04/16.
  */
-public abstract class PttnActivity<T> extends AppCompatActivity {
+public abstract class SCFFLDActivity<T> extends AppCompatActivity {
 
-    static final String Tag = PttnActivity.class.getSimpleName();
+    static final String Tag = SCFFLDActivity.class.getSimpleName();
 
     public enum IntentActions { ViewUUID };
 
@@ -54,7 +54,7 @@ public abstract class PttnActivity<T> extends AppCompatActivity {
             }
         }
         */
-        // TODO Allow apps to skip the splashscreen and start directly into a PttnActivity
+        // TODO Allow apps to skip the splashscreen and start directly into a SCFFLDActivity
         // TODO Check here for Intent.ACTION_MAIN.equals( intent.getAction() )
         // TODO (Is this sufficient, or should also test for category == LAUNCHER?)
         // TODO And then set viewUUID to something that will identify the root view to the container

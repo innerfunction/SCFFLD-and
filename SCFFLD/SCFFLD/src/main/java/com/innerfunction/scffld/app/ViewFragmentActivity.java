@@ -22,7 +22,7 @@ import com.innerfunction.scffld.R;
  *
  * Attached by juliangoacher on 26/04/16.
  */
-public class ViewFragmentActivity extends PttnActivity<ViewFragment> {
+public class ViewFragmentActivity extends SCFFLDActivity<ViewFragment> {
 
     /**
      * The currently displayed fragment.

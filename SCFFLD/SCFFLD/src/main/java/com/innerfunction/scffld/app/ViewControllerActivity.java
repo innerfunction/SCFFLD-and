@@ -33,7 +33,7 @@ import com.innerfunction.scffld.R;
  *
  * Attached by juliangoacher on 19/05/16.
  */
-public class ViewControllerActivity extends PttnActivity<ViewController> {
+public class ViewControllerActivity extends SCFFLDActivity<ViewController> {
 
     /**
      * The layout which contains the activity view.

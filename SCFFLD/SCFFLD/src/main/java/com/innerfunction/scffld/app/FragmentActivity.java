@@ -24,7 +24,7 @@ import com.innerfunction.scffld.R;
  *
  * Attached by juliangoacher on 19/05/16.
  */
-public class FragmentActivity extends PttnActivity<Fragment> {
+public class FragmentActivity extends SCFFLDActivity<Fragment> {
 
     @Override
     public void showView(Fragment view) {

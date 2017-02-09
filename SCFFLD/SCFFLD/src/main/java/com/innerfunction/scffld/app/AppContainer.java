@@ -87,9 +87,9 @@ public class AppContainer extends Container {
      * The currently active activity.
      * Normally corresponds to the currently visible activity within an app. However, if the app
      * opens an activity _external_ to the app container (i.e. an activity which doesn't implement
-     * PttnActivity) then this will be null.
+     * SCFFLDActivity) then this will be null.
      */
-    private PttnActivity currentActivity;
+    private SCFFLDActivity currentActivity;
     /** A flag indicating a start failure. */
     private boolean startFailure;
 
@@ -325,14 +325,14 @@ public class AppContainer extends Container {
 
     /**
      * Set the current activity.
-     * Should be called by a PttnActivity instance from within its onResume method.
+     * Should be called by a SCFFLDActivity instance from within its onResume method.
      */
-    public void setCurrentActivity(PttnActivity activity) {
+    public void setCurrentActivity(SCFFLDActivity activity) {
         currentActivity = activity;
     }
 
     /** Get the current activity. */
-    public PttnActivity getCurrentActivity() {
+    public SCFFLDActivity getCurrentActivity() {
         return currentActivity;
     }
 
@@ -340,7 +340,7 @@ public class AppContainer extends Container {
      * Clear the current activity.
      * Called by the active activity when it is paused (i.e. as the user navigates away).
      */
-    public void clearCurrentActivity(PttnActivity activity) {
+    public void clearCurrentActivity(SCFFLDActivity activity) {
         if( currentActivity == activity ) {
             currentActivity = null;
         }
@@ -381,7 +381,7 @@ public class AppContainer extends Container {
 
     /**
      * Get a view instance by UUID.
-     * Used by PttnActivity to fetch the activity's view after it has been launched.
+     * Used by SCFFLDActivity to fetch the activity's view after it has been launched.
      */
     public Object getViewForUUID(String uuid) {
         return globals.get( uuid );
@@ -560,7 +560,7 @@ public class AppContainer extends Container {
      */
     public void showView(Object view) {
 
-        // NOTE on supported view types: Pttn supports a number of different view types. The
+        // NOTE on supported view types: SCFFLD supports a number of different view types. The
         // main type is ViewController, and corresponds most closely to the UIViewController
         // class on iOS. Views can also be represented using Fragments (as the natural native
         // Android view type) but use of Fragments is discouraged where possible, due to the
@@ -601,7 +601,7 @@ public class AppContainer extends Container {
     /**
      * Show a view using the specified activity type.
      * If the current activity is of the specified type then its showView(...) is called (note that
-     * the current activity is an instance of PttnActivity). If the current activity can't be used
+     * the current activity is an instance of SCFFLDActivity). If the current activity can't be used
      * then an intent is raised to start a new activity of the specified type, which will then
      * display the view instance once it has launched.
      *
@@ -616,7 +616,7 @@ public class AppContainer extends Container {
             String uuid = registerPendingView( view );
             Intent intent = new Intent( androidContext, activityType );
             intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-            intent.putExtra( PttnActivity.IntentActions.ViewUUID.name(), uuid );
+            intent.putExtra( SCFFLDActivity.IntentActions.ViewUUID.name(), uuid );
             androidContext.startActivity( intent );
         }
     }
@@ -637,7 +637,7 @@ public class AppContainer extends Container {
 
     static {
         // Register standard configuration proxies.
-        // TODO: Is there a better place to put this code? Creates a two way dependency between pttn.app and pttn.ui.
+        // TODO: Is there a better place to put this code? Creates a two way dependency between scffld.app and scffld.ui.
         IOCProxyLookup.registerProxyClass( TextViewIOCProxy.class, android.widget.TextView.class );
     }
 

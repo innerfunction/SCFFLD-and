@@ -31,7 +31,7 @@ public class UserDefaults {
     private Map<String,?> values;
 
     public UserDefaults(Context context) {
-        this.preferences = context.getSharedPreferences("pttn", Context.MODE_PRIVATE );
+        this.preferences = context.getSharedPreferences("SCFFLD", Context.MODE_PRIVATE );
     }
 
     public UserDefaults(Context context, String name) {

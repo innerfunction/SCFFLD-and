@@ -20,25 +20,25 @@ import android.util.Log;
 import android.webkit.WebView;
 
 /**
- * Standard Pttn application class.
+ * Standard SCFFLD application class.
  *
  * Attached by juliangoacher on 12/07/16.
  */
-public class PttnApplication extends Application {
+public class SCFFLDApplication extends Application {
 
-    static final String Tag = PttnApplication.class.getSimpleName();
+    static final String Tag = SCFFLDApplication.class.getSimpleName();
 
     static final boolean TraceEnabled = false;
 
     /**
      * A URI specifying the location of the app container configuration.
-     * Defaults to a path resolving to the file at assets/pttn/config.json.
+     * Defaults to a path resolving to the file at assets/SCFFLD/config.json.
      */
-    private String configurationURI = "app:/pttn/config.json";
+    private String configurationURI = "app:/SCFFLD/config.json";
     /** A container for all of the app's components. */
     private AppContainer appContainer;
 
-    public PttnApplication() {}
+    public SCFFLDApplication() {}
 
     /**
      * Create a new application instance using the specified configuration URI.
@@ -47,7 +47,7 @@ public class PttnApplication extends Application {
      *
      * @param configurationURI An internal URI resolving to the app configuration.
      */
-    public PttnApplication(String configurationURI) {
+    public SCFFLDApplication(String configurationURI) {
         this.configurationURI = configurationURI;
     }
 
