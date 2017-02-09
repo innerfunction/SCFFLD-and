@@ -14,6 +14,7 @@
 package com.innerfunction.uri;
 
 import android.content.Context;
+
 import java.io.File;
 
 import com.innerfunction.util.Paths;
@@ -41,6 +42,11 @@ public class DirectoryResource extends FileResource {
         }
         // File not found.
         return null;
+    }
+
+    /** List the files contained by the directory. */
+    public String[] list() {
+        return super.file.list();
     }
 
 }

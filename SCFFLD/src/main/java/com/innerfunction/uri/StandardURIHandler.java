@@ -53,7 +53,7 @@ public class StandardURIHandler implements URIHandler {
     private Map<String,String> aliases;
     /** Constructor used for context singleton instances. */
     private StandardURIHandler(Context context) {
-        this(context, new Assets(context));
+        this( context, new Assets( context ) );
     }
 
     /** Constructor used to build copies of handlers with modified scheme contexts. */

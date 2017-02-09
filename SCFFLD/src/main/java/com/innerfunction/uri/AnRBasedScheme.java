@@ -34,6 +34,13 @@ public class AnRBasedScheme extends FileBasedScheme {
     private String packageName;
     /** The app's assets. */
     private Assets assets;
+    /**
+     * An optional file extension filter.
+     * If specified then URI names have the specified extension automatically appended,
+     * assuming the don't already have the extension; e.g. scheme:name becomes
+     * scheme:name.ext
+     */
+    private String extFilter;
 
     public AnRBasedScheme(Context context, Assets assets) {
         this( context, "", assets );
@@ -46,6 +53,13 @@ public class AnRBasedScheme extends FileBasedScheme {
         this.assets = assets;
     }
 
+    public AnRBasedScheme(Context context, String rootPath, String extFilter) {
+        this( context, rootPath, new Assets( context ) );
+        if( extFilter != null ) {
+            this.extFilter = extFilter.charAt( 0 ) == '.' ? extFilter : "."+extFilter;
+        }
+    }
+
     @Override
     public Object dereference(CompoundURI uri, Map<String,Object> params) {
         Resource result = null;
@@ -54,6 +68,10 @@ public class AnRBasedScheme extends FileBasedScheme {
         String name = uri.getName();
         if( name.length() > 0 && name.charAt( 0 ) == '/' ) {
             name = name.substring( 1 );
+        }
+        // Append extension filter if extension specified and the path doesn't already have the extension.
+        if( extFilter != null && !name.endsWith( extFilter ) ) {
+            name = name.concat( extFilter );
         }
         // The URI fragment can be used to specify one of the standard Android resource types.
         // This should not normally be necessary (for example, the code can recognize drawable

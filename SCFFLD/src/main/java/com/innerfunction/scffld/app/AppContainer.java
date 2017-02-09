@@ -32,6 +32,7 @@ import com.innerfunction.scffld.Message;
 import com.innerfunction.scffld.MessageReceiver;
 import com.innerfunction.scffld.MessageRouter;
 import com.innerfunction.scffld.ui.TextViewIOCProxy;
+import com.innerfunction.uri.AnRBasedScheme;
 import com.innerfunction.uri.CompoundURI;
 import com.innerfunction.uri.Resource;
 import com.innerfunction.uri.StandardURIHandler;
@@ -95,7 +96,7 @@ public class AppContainer extends Container {
 
     public AppContainer(Context context) {
         super( context, StandardURIHandler.getInstance( context ) );
-        setPriorityNames("types","formats","schemes","aliases","makes");
+        setPriorityNames("types", "formats", "schemes", "aliases", "makes");
     }
 
     public Map<String,URIScheme> getSchemes() {
@@ -209,10 +210,11 @@ public class AppContainer extends Container {
         addTypes( configuration.getValueAsConfiguration("types") );
 
         // Add additional schemes to the resolver/dispatcher.
-        uriHandler.addHandlerForScheme("new", new NewScheme( this ) );
-        uriHandler.addHandlerForScheme("make", new MakeScheme( this ) );
-        uriHandler.addHandlerForScheme("named", new NamedScheme( this ) );
-        uriHandler.addHandlerForScheme("post", new PostScheme() );
+        uriHandler.addHandlerForScheme("new",     new NewScheme( this ) );
+        uriHandler.addHandlerForScheme("make",    new MakeScheme( this ) );
+        uriHandler.addHandlerForScheme("named",   new NamedScheme( this ) );
+        uriHandler.addHandlerForScheme("post",    new PostScheme() );
+        uriHandler.addHandlerForScheme("pattern", new AnRBasedScheme( androidContext, "SCFFLD/patterns", "json") );
 
         // Default local settings.
         // TODO locals + settings

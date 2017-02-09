@@ -15,6 +15,7 @@ package com.innerfunction.uri;
 
 import android.util.LruCache;
 
+import java.util.ArraySet;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,6 +81,7 @@ public class DirmapScheme implements URIScheme {
     static final class Dirmap implements Map<String,Object> {
 
         private DirectoryResource dirResource;
+        private Set<String> keySet;
 
         Dirmap(DirectoryResource dirResource) {
             this.dirResource = dirResource;
@@ -97,7 +99,7 @@ public class DirmapScheme implements URIScheme {
 
         @Override
         public boolean containsKey(Object key) {
-            return resourceForKey( key ) != null;
+            return keySet().contains( key );
         }
 
         @Override
@@ -123,16 +125,27 @@ public class DirmapScheme implements URIScheme {
 
         @Override
         public boolean isEmpty() {
-            return false;
+            return size() == 0;
         }
 
         @Override
         public Set<String> keySet() {
-            return null;
+            if( keySet == null ) {
+                String[] files = dirResource.list();
+                keySet = new ArraySet<>( files );
+                for( String filename : files ) {
+                    if( filename.endsWith(".json") ) {
+                        String key = filename.substring( filename.length() - 5 );
+                        keySet.add( key );
+                    }
+                }
+            }
+            return keySet;
         }
 
         @Override
         public String put(String key, Object value) {
+            // Noop.
             return null;
         }
 
@@ -143,12 +156,13 @@ public class DirmapScheme implements URIScheme {
 
         @Override
         public String remove(Object key) {
+            // Noop.
             return null;
         }
 
         @Override
         public int size() {
-            return 0;
+            return keySet().size();
         }
 
         @Override
