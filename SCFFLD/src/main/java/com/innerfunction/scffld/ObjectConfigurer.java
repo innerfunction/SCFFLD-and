@@ -196,8 +196,8 @@ public class ObjectConfigurer {
         // otherwise.
         // When an object definition is returned, the property value is resolved according to the
         // following order of precedence:
-        // 1. A configuration which supplies an instantiation hint - e.g. *type, *and-class or
-        //    *factory - and which successfully yields an object instance always takes precedence
+        // 1. A configuration which supplies an instantiation hint - e.g. -type, -and-class or
+        //    -factory - and which successfully yields an object instance always takes precedence
         //    over other possible values;
         // 2. Next, any in-place value found by reading from the object property being configured;
         // 3. Finally, a value created by attempting to instantiate the declared type of the
@@ -210,8 +210,8 @@ public class ObjectConfigurer {
             // If this works the try using it to resolve an actual property value.
             if( valueConfig != null ) {
                 // Try asking the container to build a new object using the configuration. This
-                // will only work if the configuration contains an instantiation hint (e.g. *type,
-                // *factory etc.) and will return a non-null, fully-configured object if successful.
+                // will only work if the configuration contains an instantiation hint (e.g. -type,
+                // -factory etc.) and will return a non-null, fully-configured object if successful.
                 value = container.buildObject( valueConfig, getKeyPath( kpPrefix, propName ), true );
                 if( value == null ) {
                     // Couldn't build a value, so see if the object already has a value in-place.
@@ -332,16 +332,16 @@ public class ObjectConfigurer {
     }
 
     /**
-     * Normalize a property name by removing any *and- prefix.
-     * Returns null for reserved names (e.g. *type etc.)
+     * Normalize a property name by removing any -and: prefix.
+     * Returns null for reserved names (e.g. -type etc.)
      */
     private String normalizePropertyName(String propName) {
-        if( propName.charAt( 0 ) == '*' ) {
-            if( propName.startsWith("*and-") ) {
-                // Strip *and- prefix from names
+        if( propName.charAt( 0 ) == '-' ) {
+            if( propName.startsWith("-and:") ) {
+                // Strip -and prefix from names
                 propName = propName.substring( 5 );
                 // Don't process class names.
-                if( "class".equals( propName ) ) {
+                if( "-class".equals( propName ) ) {
                     propName = null;
                 }
             }

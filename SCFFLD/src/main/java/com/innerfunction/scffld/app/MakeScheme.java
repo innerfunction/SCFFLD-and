@@ -39,11 +39,10 @@ public class MakeScheme implements URIScheme {
 
     public Object dereference(CompoundURI uri, Map<String,Object> params) {
         Object result = null;
-        Configuration makes = container.getMakes();
-        Configuration config = makes.getValueAsConfiguration( uri.getName() );
+        Configuration patterns = container.getPatterns();
+        Configuration config = patterns.getValueAsConfiguration( uri.getName() );
         if( config != null ) {
-            config = config.extendWithParameters( params );
-            result = container.buildObject( config, uri.toString(), false );
+            result = container.buildObject( config, params, uri.toString() );
         }
         return result;
     }

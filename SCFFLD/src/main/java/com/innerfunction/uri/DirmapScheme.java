@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.innerfunction.util.Assets;
+import com.innerfunction.scffld.Configuration;
 
 /**
  * The handler for the dirmap: URI scheme.
@@ -118,7 +119,7 @@ public class DirmapScheme implements URIScheme {
             // and return its parsed contents as the result.
             FileResource fileRsc = resourceForKey( key );
             if( fileRsc != null ) {
-                return fileRsc.asJSONData();
+                return new Configuration( fileRsc );
             }
             return null;
         }

@@ -26,7 +26,7 @@ public class IOCObjectFactoryBase<T> implements IOCObjectFactory {
 
     /**
      * A default base configuration for instances produced by this class.
-     * Typically minimal implementation should contain a *type or *ios-class property.
+     * Typically minimal implementation should contain a -type or -ios-class property.
      */
     private Configuration baseConfiguration;
 

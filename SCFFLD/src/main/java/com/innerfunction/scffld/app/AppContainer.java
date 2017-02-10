@@ -25,6 +25,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
+import static com.innerfunction.util.DataLiterals.*;
+
 import com.innerfunction.scffld.Configuration;
 import com.innerfunction.scffld.Container;
 import com.innerfunction.scffld.IOCProxyLookup;
@@ -82,8 +84,8 @@ public class AppContainer extends Container {
     private Map<String,Configuration> andSystemClassConfigs;
     /** Map of additional scheme configurations. */
     private Map<String,URIScheme> schemes;
-    /** Make configurations. */
-    private Configuration makes;
+    /** Make configuration patterns. */
+    private Configuration patterns;
     /**
      * The currently active activity.
      * Normally corresponds to the currently visible activity within an app. However, if the app
@@ -96,7 +98,7 @@ public class AppContainer extends Container {
 
     public AppContainer(Context context) {
         super( context, StandardURIHandler.getInstance( context ) );
-        setPriorityNames("types", "formats", "schemes", "aliases", "makes");
+        setPriorityNames("types", "formats", "schemes", "aliases", "patterns");
     }
 
     public Map<String,URIScheme> getSchemes() {
@@ -107,12 +109,12 @@ public class AppContainer extends Container {
         this.schemes = schemes;
     }
 
-    public Configuration getMakes() {
-        return makes;
+    public Configuration getPatterns() {
+        return patterns;
     }
 
-    public void setMakes(Configuration makes) {
-        this.makes = makes;
+    public void setPatterns(Configuration patterns) {
+        this.patterns = patterns;
     }
 
     public Map<String,URIValueFormatter> getFormats() {
@@ -137,6 +139,17 @@ public class AppContainer extends Container {
 
     public int getAppBackgroundColor() {
         return appBackgroundColor;
+    }
+
+    /**
+     * Load the app using the standard SCFFLD configuration.
+     */
+    public void loadStandardConfiguration() {
+        loadConfiguration( m(
+            kv("types",     "@app:/SCFFLD/types.json"),
+            kv("schemes",   m() ),
+            kv("patterns",  "@dirmap:/SCFFLD/patterns")
+        ));
     }
 
     /**
@@ -219,11 +232,11 @@ public class AppContainer extends Container {
         // Default local settings.
         // TODO locals + settings
 
-        nameds.put("uriHandler", uriHandler );
-        nameds.put("globals", globals );
+        nameds.put("uriHandler",    uriHandler );
+        nameds.put("globals",       globals );
         //nameds.put("locals", locals );
-        nameds.put("container", this );
-        nameds.put("app", this );
+        nameds.put("container",     this );
+        nameds.put("app",           this );
 
         // Perform default container configuration.
         super.configureWith( configuration );

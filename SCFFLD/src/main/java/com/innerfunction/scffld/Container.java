@@ -156,9 +156,47 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
     public Configuration makeConfiguration(Object config) {
         if( config instanceof Resource ) {
             Resource resource = (Resource)config;
-            return new Configuration( resource.asJSONData(), resource.getURIHandler(), androidContext );
+            return new Configuration( resource );
         }
         return new Configuration( config, uriHandler, androidContext );
+    }
+
+    /**
+     * Build an object from configuration data.
+     * @param data          Configuration data, provided as a Configuration object or JSON data.
+     */
+    public Object buildObjectWithData(Object data) {
+        return buildObjectWithData( data, null );
+    }
+
+    /**
+     * Build an object from configuration data.
+     * @param data          Configuration data, provided as a Configuration object or JSON data.
+     * @param parameters    Parameters to pass into the configuration.
+     */
+    public Object buildObjectWithData(Object data, Map<String, Object> parameters) {
+        return buildObjectWithData( data, parameters, data.toString() );
+    }
+
+    /**
+     * Build an object from configuration data.
+     * @param data          Configuration data, provided as a Configuration object or JSON data.
+     * @param parameters    Parameters to pass into the configuration.
+     * @param identifier    An identifier for the object being built, used in log output.
+     */
+    public Object buildObjectWithData(Object data, Map<String, Object> parameters, String identifier) {
+        Configuration config;
+        if( data instanceof Configuration ) {
+            config = (Configuration)data;
+        }
+        else {
+            config = new Configuration( data, containerConfig );
+        }
+        config = config.normalize();
+        if( parameters != null ) {
+            config = config.extendWithParameters( parameters );
+        }
+        return buildObjectWithConfiguration( config, identifier, false );
     }
 
     /**
@@ -172,10 +210,10 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
      */
     public Object buildObject(Configuration configuration, String identifier, boolean quiet) {
         Object object = null;
-        if( configuration.hasValue("*factory") ) {
+        if( configuration.hasValue("-factory") ) {
             // The configuration specifies an object factory, so resolve the factory object and
             // attempt using it to instantiate the object.
-            Object factory = configuration.getRawValue("*factory");
+            Object factory = configuration.getRawValue("-factory");
             if( factory instanceof IOCObjectFactory ) {
                 object = ((IOCObjectFactory)factory).buildObject( configuration, this, identifier );
                 doPostInstantiation( object );
@@ -210,9 +248,12 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
      */
     public Object instantiateObjectWithConfiguration(Configuration configuration, String identifier, boolean quiet) {
         Object object = null;
-        String className = configuration.getValueAsString("*and-class");
+        String className = configuration.getValueAsString("-and-class");
         if( className == null ) {
-            String type = configuration.getValueAsString("*type");
+            className = configuration.getValueAsString("-class");
+        }
+        if( className == null ) {
+            String type = configuration.getValueAsString("-type");
             if( type != null ) {
                 className = types.getValueAsString( type );
                 if( className == null && !quiet ) {
@@ -221,7 +262,7 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
                 }
             }
             else if( !quiet ) {
-                Log.e( Tag, String.format("Instantiating %s, Component configuration missing *type or *and-class property",
+                Log.e( Tag, String.format("Instantiating %s, Component configuration missing -type or -and-class property",
                     identifier ) );
             }
         }
@@ -446,6 +487,7 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
             // named object is currently being configured.
             List<PendingNamed> pendings = pendingNames.get( name );
             if( pendings != null ) {
+                // TODO: Add option to throw exception here, instead of logging the problem.
                 Log.d( Tag, String.format("IDO: Named dependency cycle detected, creating pending entry for %s...",
                     name ) );
                 // Create a placeholder object and record in the list of placeholders waiting for

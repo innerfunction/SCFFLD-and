@@ -29,6 +29,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 
 import com.innerfunction.uri.Resource;
+import com.innerfunction.uri.StandardURIHandler;
 import com.innerfunction.uri.URIHandler;
 import com.innerfunction.util.KeyPath;
 import com.innerfunction.util.Maps;
@@ -46,11 +47,11 @@ public class Configuration {
     public enum Representation { Raw, String, Number, Boolean, Date, Image, URL, Resource, Data, JSONData, Configuration }
 
     /** The configuration data. */
-    private Map<String,Object> data;
+    private Map<String,Object> configData;
     /** The original data which the configuration data was derived from. */
     private Object sourceData;
     /** The root configuration. Used to resolve # value references. */
-    private Configuration root = this;
+    private Configuration topLevelConfig = this;
     /** A URI handler for dereferencing URIs. */
     private URIHandler uriHandler;
     /**
@@ -62,7 +63,7 @@ public class Configuration {
      *     <li>Configuration template values, indicated by property values prefixed with $.</li>
      * </ul>
      */
-    private Map<String,Object> context;
+    private Map<String,Object> dataContext;
     /** The app context. */
     private Context androidContext;
     /** Android resources. */
@@ -84,7 +85,7 @@ public class Configuration {
         this.uriHandler = uriHandler;
         this.conversions = TypeConversions.instanceForContext( androidContext );
         this.androidContext = androidContext;
-        this.context = new HashMap<>();
+        this.dataContext = new HashMap<>();
         setData( data );
         initialize();
     }
@@ -100,10 +101,18 @@ public class Configuration {
         this.uriHandler = parent.uriHandler;
         this.conversions = parent.conversions;
         this.androidContext = parent.androidContext;
-        this.root = parent;
-        this.context = parent.context;
+        this.topLevelConfig = parent;
+        this.dataContext = parent.dataContext;
         setData( data );
         initialize();
+    }
+
+    /**
+     * Create a configuration using data from a URI resource.
+     * @param resource  A URI resource containing configuration data.
+     */
+    public Configuration(Resource resource) {
+        this( resource.asJSONData(), resource.getURIHandler(), resource.getContext() );
     }
 
     /**
@@ -120,14 +129,14 @@ public class Configuration {
     /**
      * Create an empty configuration.
      * This constructor is only used internally for creating a base configuration which is about
-     * to be extended with additional data. An empty configuration lacks certain key properties
-     * - e.g. a URI handler - so isn't fully functional.
+     * to be extended with additional data.
      */
     private Configuration(Context androidContext) {
         this.androidContext = androidContext;
         this.conversions = TypeConversions.instanceForContext( androidContext );
         setData( null );
-        this.context = new HashMap<>();
+        this.dataContext = new HashMap<>();
+        this.uriHandler = StandardURIHandler.getInstance( androidContext );
     }
 
     /**
@@ -143,10 +152,10 @@ public class Configuration {
         this.uriHandler = parent.uriHandler;
         this.conversions = parent.conversions;
         this.androidContext = parent.androidContext;
-        this.root = parent.root;
+        this.topLevelConfig = parent.topLevelConfig;
         this.sourceData = parent.sourceData;
-        this.data = Maps.mixin( config.data, mixin.data );
-        this.context = Maps.mixin( config.context, mixin.context );
+        this.configData = Maps.mixin( config.configData, mixin.configData );
+        this.dataContext = Maps.mixin( config.dataContext, mixin.dataContext );
         initialize();
     }
 
@@ -158,18 +167,18 @@ public class Configuration {
         this.r = androidContext.getResources();
         // Search the configuration data for any parameter values, add any found to a separate map.
         Map<String,Object> params = new HashMap<>();
-        for( String key : data.keySet() ) {
+        for( String key : configData.keySet() ) {
             if( key.startsWith("$") ) {
-                params.put( key, data.get( key ) );
+                params.put( key, configData.get( key ) );
             }
         }
         // Remove parameter values from the data map.
         for( String key : params.keySet() ) {
-            data.remove( key );
+            configData.remove( key );
         }
         // Add param values to the context.
         if( params.size() > 0 ) {
-            context.putAll( params );
+            dataContext.putAll( params );
         }
     }
 
@@ -190,13 +199,13 @@ public class Configuration {
         if( data instanceof Map ) {
             // NOTE important to create a copy of the data at this point; it could be configuration
             // data, and we don't want to rewrite it later.
-            this.data = new HashMap( (Map<String,Object>)data );
+            this.configData = new HashMap( (Map<String,Object>)data );
         }
     }
 
     /** Get the raw configuration data. */
     public Object getData() {
-        return data;
+        return configData;
     }
 
     /** Get the configuration's source data. */
@@ -220,7 +229,7 @@ public class Configuration {
 
     /** Set the configuration's context data. */
     public void setContext(Map<String,Object> context) {
-        this.context = context;
+        this.dataContext = context;
     }
 
     /**
@@ -251,12 +260,12 @@ public class Configuration {
             // NOTE When the configuration data is sourced from a resource, then the
             // following properties need to be different from when the data is found
             // directly in the configuration:
-            // * root: The resource defines a new context for # refs, so root needs to
+            // * topLevelConfig: The resource defines a new context for # refs, so root needs to
             //   point to the new config.
             // * uriHandler: The resource's handler needs to be used, so that any
             //   relative URIs within the resource data resolve correctly.
             if( valueRsc != null ) {
-                configValue.root = configValue;
+                configValue.topLevelConfig = configValue;
                 configValue.uriHandler = valueRsc.getURIHandler();
             }
             return configValue.normalize();
@@ -293,7 +302,7 @@ public class Configuration {
                 // to a $ or # prefixed value, then they will be resolved in the following
                 // code.
                 if( prefix == '$' ) {
-                    value = context.get( valueStr );
+                    value = dataContext.get( valueStr );
                     // If the resolved value is also a string then continue to the following
                     // modifier prefixes; otherwise return the value.
                     if( value instanceof String ) {
@@ -310,10 +319,10 @@ public class Configuration {
                         prefix = 0x00;
                     }
                 }
-                // Evaluate any string beginning with ? as a string template.
-                if( prefix == '?' ) {
+                // Evaluate any string beginning with ? or > as a string template.
+                if( prefix == '?' || prefix == '>' ) {
                     valueStr = valueStr.substring( 1 );
-                    valueStr = StringTemplate.render( valueStr, context );
+                    valueStr = StringTemplate.render( valueStr, dataContext );
                     // Check for a new prefix.
                     if( valueStr.length() > 1 ) {
                         prefix = valueStr.charAt( 0 );
@@ -331,7 +340,7 @@ public class Configuration {
                 // other properties on the root configuration. Attempt to resolve these; if
                 // they don't resolve the return the original value.
                 else if( prefix == '#' ) {
-                    value = root.getValueAs( valueStr.substring( 1 ), representation );
+                    value = topLevelConfig.getValueAs( valueStr.substring( 1 ), representation );
                     if( value == null ) {
                         value = valueStr;
                     }
@@ -485,7 +494,7 @@ public class Configuration {
 
     /** Return a list of the top-level value names in the configuration data. */
     public List<String> getValueNames() {
-        return new ArrayList<>( data.keySet() );
+        return new ArrayList<>( configData.keySet() );
     }
 
     /** Get a configuration value as a configuration object. */
@@ -585,29 +594,29 @@ public class Configuration {
     public Configuration extendWithParameters(Map<String,Object> params) {
         Configuration result = this;
         if( params.size() > 0 ) {
-            result = new Configuration( data, this );
-            result.context = new HashMap<>( result.context );
+            result = new Configuration( configData, this );
+            result.dataContext = new HashMap<>( result.dataContext );
             for( String name : params.keySet() ) {
-                result.context.put("$"+name, params.get( name ) );
+                result.dataContext.put("$"+name, params.get( name ) );
             }
         }
         return result;
     }
 
     /**
-     * Flatten the configuration by merging "*config", "*mixin" and "*mixins" properties.
+     * Flatten the configuration by merging "-config", "-mixin" and "-mixins" properties.
      */
     public Configuration flatten() {
         Configuration result = this;
-        Configuration mixin = getValueAsConfiguration("*config");
+        Configuration mixin = getValueAsConfiguration("-config");
         if( mixin != null ) {
             result = mixinConfiguration( mixin );
         }
-        mixin = getValueAsConfiguration("*mixin");
+        mixin = getValueAsConfiguration("-mixin");
         if( mixin != null ) {
             result = mixinConfiguration( mixin );
         }
-        List<Configuration> mixins = getValueAsConfigurationList("*mixins");
+        List<Configuration> mixins = getValueAsConfigurationList("-mixins");
         if( mixins != null ) {
             for( Configuration mxn : mixins ) {
                 result = mixinConfiguration( mxn );
@@ -622,7 +631,7 @@ public class Configuration {
         List<Configuration> hierarchy = new ArrayList<>();
         Configuration current = flatten();
         hierarchy.add( current );
-        while( (current = current.getValueAsConfiguration("*extends")) != null ) {
+        while( (current = current.getValueAsConfiguration("-extends")) != null ) {
             current = current.flatten();
             if( hierarchy.contains( current ) ) {
                 // Extension loop detected, stop building the hierarchy.
@@ -638,7 +647,7 @@ public class Configuration {
             result = result.mixinConfiguration( config );
         }
         result.sourceData = sourceData;
-        result.root = root;
+        result.topLevelConfig = topLevelConfig;
         result.uriHandler = uriHandler;
         return result;
     }
@@ -649,9 +658,9 @@ public class Configuration {
         // Copy non-excluded keys to the new configuration's data.
         Set<String> excludedKeys = new HashSet<>();
         Collections.addAll( excludedKeys, keys );
-        for( String key : this.data.keySet() ) {
+        for( String key : this.configData.keySet() ) {
             if( !excludedKeys.contains( key ) ) {
-                data.put( key, this.data.get( key ) );
+                data.put( key, this.configData.get( key ) );
             }
         }
         // Create and return the new configuration.
@@ -662,7 +671,7 @@ public class Configuration {
 
     @Override
     public int hashCode() {
-        return data.hashCode() ^ context.hashCode();
+        return configData.hashCode() ^ dataContext.hashCode();
     }
 
     @Override
@@ -671,11 +680,11 @@ public class Configuration {
             return false;
         }
         Configuration config = (Configuration)obj;
-        return data.equals( config.data ) && context.equals( config.context );
+        return configData.equals( config.configData ) && dataContext.equals( config.dataContext );
     }
 
     @Override
     public String toString() {
-        return String.format( "data: %s context: %s", data, context );
+        return String.format( "configData: %s dataContext: %s", configData, dataContext );
     }
 }
