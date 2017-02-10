@@ -63,12 +63,12 @@ public class ObjectConfigurer {
     }
 
     /**
-     * Configure a named object of the container.
+     * Configure a named property of the container.
      * @param name          A property name.
      * @param configuration The container configuration.
      * @return
      */
-    public Object configureNamedObject(String name, Configuration configuration) {
+    public Object configureNamedProperty(String name, Configuration configuration) {
         Object named = buildPropertyValue( name, containerProperties, configuration, "" );
         if( named != null ) {
             injectPropertyValue( name, containerProperties, named );

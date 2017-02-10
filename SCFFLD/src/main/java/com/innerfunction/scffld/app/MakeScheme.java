@@ -21,11 +21,14 @@ import java.util.Map;
 
 /**
  * An internal URI handler for the make: scheme.
- * The make: scheme allows new components to be instantiated from a pre-defined configuration.
- * The set of pre-defined configurations must be declared in a top-level property of the app
- * container named 'makes'. The 'name' part of the make: URI then refers to a key within
- * the makes map. Make configurations can be parameterized, with parameter values provided
- * via the make: URI's parameters.
+ * The make: scheme allows objects to be instantiated from pre-defined configuration
+ * patterns, or directly from configuration files.
+ * When used to instantiate a pattern, the name of the pattern must be specified in the name
+ * part of the URI. The URI's parameters are then passed to the pattern as configuration
+ * parameters.
+ * When used to instantiate an object from a configuration file, the name part of the URI
+ * is left empty, and a single config parameter must be given, resolving to the configuration
+ * to be instantiated.
  *
  * Attached by juliangoacher on 30/03/16.
  */
@@ -39,11 +42,27 @@ public class MakeScheme implements URIScheme {
 
     public Object dereference(CompoundURI uri, Map<String,Object> params) {
         Object result = null;
-        Configuration patterns = container.getPatterns();
-        Configuration config = patterns.getValueAsConfiguration( uri.getName() );
+        Configuration config = null
+        String name = uri.getName();
+        if( name != null && name.length() > 0 ) {
+            // Build a pattern.
+            Configuration patterns = container.getPatterns();
+            config = patterns.getValueAsConfiguration( name );
+        }
+        else {
+            // Build a configuration.
+            Object configParam = params.get("config");
+            if( configParam instanceof Configuration ) {
+                config = (Configuration)configParam;
+            }
+            else if( configParam instanceof Resource ) {
+                config = new Configuration( (Resource)configParam );
+            }
+        }
         if( config != null ) {
             result = container.buildObject( config, params, uri.toString() );
         }
+
         return result;
     }
 

@@ -98,8 +98,9 @@ public class AppContainer extends Container {
     /** The standard app container configuration. */
     private Object standardConfiguration = m(
         kv("types",     "@app:/SCFFLD/types.json"),
-        kv("schemes",   m() ),
-        kv("patterns",  "@dirmap:/SCFFLD/patterns")
+        kv("schemes",   "@dirmap:/SCFFLD/schemes"),
+        kv("patterns",  "@dirmap:/SCFFLD/patterns"),
+        kv("nameds",    "@dirmap:/SCFFLD/nameds")
     );
 
     public AppContainer(Context context) {
@@ -243,6 +244,13 @@ public class AppContainer extends Container {
         //nameds.put("locals", locals );
         nameds.put("container",     this );
         nameds.put("app",           this );
+
+        // Copy any configurations defined in the /nameds directory over the container configuration.
+        Configuration namedsConfig = configuration.getValueAsConfiguration("nameds");
+        if( namedsConfig != null ) {
+            configuration = configuration.configurationWithKeysExcluded("nameds");
+            configuration = configuration.mixinConfiguration( namedsConfig );
+        }
 
         // Perform default container configuration.
         super.configureWith( configuration );
