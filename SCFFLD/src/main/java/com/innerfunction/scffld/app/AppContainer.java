@@ -95,6 +95,12 @@ public class AppContainer extends Container {
     private SCFFLDActivity currentActivity;
     /** A flag indicating a start failure. */
     private boolean startFailure;
+    /** The standard app container configuration. */
+    private Object standardConfiguration = m(
+        kv("types",     "@app:/SCFFLD/types.json"),
+        kv("schemes",   m() ),
+        kv("patterns",  "@dirmap:/SCFFLD/patterns")
+    );
 
     public AppContainer(Context context) {
         super( context, StandardURIHandler.getInstance( context ) );
@@ -141,15 +147,15 @@ public class AppContainer extends Container {
         return appBackgroundColor;
     }
 
+    public void setStandardConfiguration(Object config) {
+        this.standardConfiguration = config;
+    }
+
     /**
      * Load the app using the standard SCFFLD configuration.
      */
     public void loadStandardConfiguration() {
-        loadConfiguration( m(
-            kv("types",     "@app:/SCFFLD/types.json"),
-            kv("schemes",   m() ),
-            kv("patterns",  "@dirmap:/SCFFLD/patterns")
-        ));
+        loadConfiguration( standardConfiguration );
     }
 
     /**
