@@ -186,11 +186,11 @@ public class StandardURIHandler implements URIHandler {
         else {
             Log.e( LogTag, String.format("Handler not found for scheme '%s'", uri.getScheme() ) );
         }
-        // If the value result is a Resource instance then sets its uriHandler property to a copy
-        // of this handler, but with a modified scheme context with the current scheme name mapped
+        // If the value result implements the URIHandlerAware interface then pass it a reference
+        // to this handler, but with a modified scheme context with the current scheme name mapped
         // to the resource's URI.
-        if( value instanceof Resource ) {
-            ((Resource)value).setURIHandler( modifySchemeContext( uri ) );
+        if( value instanceof URIHandlerAware ) {
+            ((URIHandlerAware)value).setURIHandler( modifySchemeContext( uri ) );
         }
         // If the URI specifies a formatter then apply it to the URI result.
         String format = uri.getFormat();

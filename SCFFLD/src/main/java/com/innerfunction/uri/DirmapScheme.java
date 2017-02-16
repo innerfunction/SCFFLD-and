@@ -79,7 +79,7 @@ public class DirmapScheme implements URIScheme {
     /**
      * A Map interface wrapper for a directory resource.
      */
-    static final class Dirmap implements Map<String,Object> {
+    static final class Dirmap implements Map<String,Object>, URIHandlerAware {
 
         private DirectoryResource dirResource;
         private Set<String> keySet;
@@ -91,6 +91,10 @@ public class DirmapScheme implements URIScheme {
         private FileResource resourceForKey(Object key) {
             String path = key.concat(".json");
             return dirResource.resourceForPath( path );
+        }
+
+        public void setURIHandler(URIHandler uriHandler) {
+            dirResource.setURIHandler( uriHandler );
         }
 
         @Override

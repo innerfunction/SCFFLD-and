@@ -33,7 +33,11 @@ import com.innerfunction.scffld.IOCProxyLookup;
 import com.innerfunction.scffld.Message;
 import com.innerfunction.scffld.MessageReceiver;
 import com.innerfunction.scffld.MessageRouter;
+import com.innerfunction.scffld.ui.NavigationViewController;
+import com.innerfunction.scffld.ui.SlideViewController;
 import com.innerfunction.scffld.ui.TextViewIOCProxy;
+import com.innerfunction.scffld.ui.WebViewController;
+import com.innerfunction.scffld.ui.table.TableViewController;
 import com.innerfunction.uri.AnRBasedScheme;
 import com.innerfunction.uri.CompoundURI;
 import com.innerfunction.uri.Resource;
@@ -58,6 +62,19 @@ import java.util.UUID;
 public class AppContainer extends Container {
 
     static final String Tag = AppContainer.class.getSimpleName();
+
+    /**
+     * The standard core type mappings.
+     */
+    static final Map<String,String> CoreTypes = m(
+        // Types are coded this way so that (1) class references can be checked at compile
+        // time and (2) refactor tools can update the mapping in the case of class renames.
+        kv("View",              ViewController.class.getCanonicalName() ),
+        kv("NavigationView",    NavigationViewController.class.getCanonicalName() ),
+        kv("SlideView",         SlideViewController.class.getCanonicalName() ),
+        kv("WebView",           WebViewController.class.getCanonicalName() ),
+        kv("ListView",          TableViewController.class.getCanonicalName() )
+    );
 
     /**
      * Global values available to the container's configuration. Can be referenced from within
@@ -656,6 +673,7 @@ public class AppContainer extends Container {
     public static synchronized AppContainer getAppContainer(Context context) {
         if( Instance == null ) {
             Instance = new AppContainer( context );
+            Instance.addTypes( CoreTypes );
         }
         return Instance;
     }

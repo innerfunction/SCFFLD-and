@@ -136,7 +136,7 @@ public class SlideViewController extends ViewController {
     @Override
     public boolean routeMessage(Message message, Object sender) {
         boolean routed = false;
-        if( message.hasTarget("slide") ) {
+        if( message.hasTarget("slideView") ) {
             message = message.popTargetHead();
             ViewController slideView = getSlideView();
             if( message.hasEmptyTarget() ) {
@@ -146,7 +146,7 @@ public class SlideViewController extends ViewController {
                 routed = slideView.routeMessage( message, sender );
             }
         }
-        else if( message.hasTarget("main") ) {
+        else if( message.hasTarget("mainView") ) {
             message = message.popTargetHead();
             ViewController mainView = getMainView();
             if( message.hasEmptyTarget() ) {

@@ -23,7 +23,7 @@ import com.innerfunction.util.TypeConversions;
 /**
  * Class representing a resource referenced by an internal compound URI.
  */
-public class Resource {
+public class Resource implements URIHandlerAware {
 
     private static final String LogTag = Resource.class.getSimpleName();
 
@@ -60,9 +60,10 @@ public class Resource {
 
     /**
      * Set the resource's URI handler.
+     * Declared by the URIHandlerAware interface.
      * @param uriHandler    A URI handler with appropriate scheme context URIs.
      */
-    protected void setURIHandler(URIHandler uriHandler) {
+    public void setURIHandler(URIHandler uriHandler) {
         this.uriHandler = uriHandler;
     }
 

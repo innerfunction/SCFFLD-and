@@ -177,6 +177,10 @@ public class TableViewCellFactory implements IOCContextAware {
         String style = rowData.getString("style", this.style );
         ATableViewCell cell = dataSource.dequeueReusableCellWithIdentifier( style );
 
+        // Process title and description
+        String title = rowData.getString("title");
+        String description = rowData.getString("description");
+
         if( cell == null ) {
             ATableViewCellStyle cellStyle = ATableViewCellStyle.Default;
             if( style.equals("Style1") ) {
@@ -188,12 +192,12 @@ public class TableViewCellFactory implements IOCContextAware {
             else if( style.equals("Subtitle") ) {
                 cellStyle = ATableViewCellStyle.Subtitle;
             }
+            else if( description != null ) {
+                // No style explicitly defined, but a description is provided so display it.
+                cellStyle = ATableViewCellStyle.Subtitle;
+            }
             cell = new ATableViewCell( cellStyle, style, parent.getActivity() );
         }
-
-        // Process title and description
-        String title = rowData.getString("title");
-        String description = rowData.getString("description");
 
         TextView textLabel = cell.getTextLabel();
         textLabel.setText( title );
