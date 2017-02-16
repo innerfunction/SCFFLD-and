@@ -128,10 +128,8 @@ public class Configuration {
 
     /**
      * Create an empty configuration.
-     * This constructor is only used internally for creating a base configuration which is about
-     * to be extended with additional data.
      */
-    private Configuration(Context androidContext) {
+    public Configuration(Context androidContext) {
         this.androidContext = androidContext;
         this.conversions = TypeConversions.instanceForContext( androidContext );
         setData( null );
@@ -201,6 +199,15 @@ public class Configuration {
             // data, and we don't want to rewrite it later.
             this.configData = new HashMap( (Map<String,Object>)data );
         }
+    }
+
+    /**
+     * Set the configuration data.
+     * Use when (a) the type of the data is known, and (b) when the source data doesn't need to be
+     * copied.
+     */
+    public void setConfigData(Map<String,Object> configData) {
+        this.configData = configData;
     }
 
     /** Get the raw configuration data. */
@@ -359,6 +366,14 @@ public class Configuration {
             return value;
         }
     };
+
+    /**
+     * Resolve an unmodified configuration value.
+     * Returns the value as it appears in the JSON, without applying any modifiers.
+     */
+    public Object getUnmodifiedValue(String keyPath) {
+        return KeyPath.resolve( keyPath, configData );
+    }
 
     /**
      * Resolve a configuration value.

@@ -24,8 +24,8 @@ import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout.LayoutParams;
 
+import com.innerfunction.scffld.Configuration;
 import com.innerfunction.scffld.IOCContextAware;
-import com.innerfunction.util.ValueMap;
 
 import com.nakardo.atableview.foundation.NSIndexPath;
 import com.nakardo.atableview.internal.ATableViewCellContainerView;
@@ -48,9 +48,11 @@ public class TableViewCellFactory implements IOCContextAware {
     static final int DefaultImageHeight = 50;
     static final int DefaultImageWidth = 50;
     static final String BackgroundImageViewTag = "BackgroundImageView";
+    static final String Black = "#000000";
+    static final String White = "#FFFFFF";
 
     public interface CellDecorator {
-        ATableViewCell decorateCell(ATableViewCell cell, ValueMap data, TableViewCellFactory factory);
+        ATableViewCell decorateCell(ATableViewCell cell, Configuration data, TableViewCellFactory factory);
     }
 
     private TableViewController parent;
@@ -61,18 +63,18 @@ public class TableViewCellFactory implements IOCContextAware {
     /** The cell display style. */
     private String style = "Style1";
     /** The default main text colour. */
-    private int textColor = Color.BLACK;
+    private String textColor = Black;
     /** The default text colour for a selected cell. */
-    private int selectedTextColor = Color.BLACK;
+    private String selectedTextColor = Black;
     /** The default detail text colour. */
-    private int detailTextColor = Color.BLACK;
+    private String detailTextColor = Black;
     /** The default detail text colour for a selected cell. */
-    private int selectedDetailTextColor = Color.BLACK;
+    private String selectedDetailTextColor = Black;
     /** The cell's default background colour. */
-    private int backgroundColor = Color.WHITE;
+    private String backgroundColor = White;
     /** The default background colour for a selected cell. */
     @SuppressWarnings("unused")
-    private int selectedBackgroundColor = Color.WHITE;
+    private String selectedBackgroundColor = White;
     /** The default cell height. */
     private Number height = DefaultRowHeight;
     /** The default width of the cell's image. */
@@ -116,27 +118,27 @@ public class TableViewCellFactory implements IOCContextAware {
         this.style = style;
     }
 
-    public void setTextColor(int color) {
+    public void setTextColor(String color) {
         this.textColor = color;
     }
 
-    public void setSelectedTextColor(int color) {
+    public void setSelectedTextColor(String color) {
         this.selectedTextColor = color;
     }
 
-    public void setDetailTextColor(int color) {
+    public void setDetailTextColor(String color) {
         this.detailTextColor = color;
     }
 
-    public void setSelectedDetailTextColor(int color) {
+    public void setSelectedDetailTextColor(String color) {
         this.selectedDetailTextColor = color;
     }
 
-    public void setBackgroundColor(int color) {
+    public void setBackgroundColor(String color) {
         this.backgroundColor = color;
     }
 
-    public void setSelectedBackgroundColor(int color) {
+    public void setSelectedBackgroundColor(String color) {
         this.selectedBackgroundColor = color;
     }
 
@@ -172,14 +174,14 @@ public class TableViewCellFactory implements IOCContextAware {
     @SuppressLint("DefaultLocale")
     public ATableViewCell resolveCellForTable(ATableView tableView, NSIndexPath indexPath, ATableViewDataSource dataSource) {
 
-        ValueMap rowData = tableData.getRowDataForIndexPath( indexPath );
+        Configuration rowData = tableData.getRowDataForIndexPath( indexPath );
 
-        String style = rowData.getString("style", this.style );
+        String style = rowData.getValueAsString("style", this.style );
         ATableViewCell cell = dataSource.dequeueReusableCellWithIdentifier( style );
 
         // Process title and description
-        String title = rowData.getString("title");
-        String description = rowData.getString("description");
+        String title = rowData.getValueAsString("title");
+        String description = rowData.getValueAsString("description");
 
         if( cell == null ) {
             ATableViewCellStyle cellStyle = ATableViewCellStyle.Default;
@@ -201,62 +203,50 @@ public class TableViewCellFactory implements IOCContextAware {
 
         TextView textLabel = cell.getTextLabel();
         textLabel.setText( title );
-        textLabel.setTextColor( rowData.getColor("textColor", textColor ) );
+        textLabel.setTextColor( rowData.getValueAsColor("textColor", textColor ) );
         // TODO: android TextView only has setHighlightColor, not highlightedTextColor
-        textLabel.setHighlightColor( rowData.getColor("selectedTextColor", selectedTextColor ) );
+        textLabel.setHighlightColor( rowData.getValueAsColor("selectedTextColor", selectedTextColor ) );
         textLabel.setBackgroundColor( Color.TRANSPARENT );
 
         TextView detailTextLabel = cell.getDetailTextLabel();
         if( description != null && detailTextLabel != null ) {
             detailTextLabel.setText( description );
-            detailTextLabel.setTextColor( rowData.getColor("detailTextColor", detailTextColor ) );
-            detailTextLabel.setHighlightColor( rowData.getColor("detailSelectedTextColor", selectedDetailTextColor ) );
+            detailTextLabel.setTextColor( rowData.getValueAsColor("detailTextColor", detailTextColor ) );
+            detailTextLabel.setHighlightColor( rowData.getValueAsColor("detailSelectedTextColor", selectedDetailTextColor ) );
             detailTextLabel.setBackgroundColor( Color.TRANSPARENT );
         }
 
-        cell.setBackgroundColor( rowData.getColor("backgroundColor", backgroundColor ) );
+        cell.setBackgroundColor( rowData.getValueAsColor( "backgroundColor", backgroundColor ) );
 
-        String imageName = rowData.getString("image");
-        Drawable image = null;
-        if( imageName != null ) {
-            Number imageHeight = rowData.getNumber( "imageHeight", this.imageHeight );
-            if( imageHeight == null ) {
-                imageHeight = rowData.getNumber( "height", height );
-            }
-            if( imageHeight.intValue() == 0 ) {
-                imageHeight = DefaultImageHeight;
-            }
-            Number imageWidth = rowData.getNumber( "imageWidth", this.imageWidth );
-            if( imageWidth.intValue() == 0 ) {
-                imageHeight = DefaultImageWidth;
-            }
-
-            float radius = imageHeight.floatValue() * pixelRatio * 4;
-            image = tableData.loadRoundedImage( imageName, radius );
+        Number imageHeight = rowData.getValueAsNumber( "imageHeight", this.imageHeight );
+        if( imageHeight == null ) {
+            imageHeight = rowData.getValueAsNumber( "height", height );
+        }
+        if( imageHeight.intValue() == 0 ) {
+            imageHeight = DefaultImageHeight;
+        }
+        Number imageWidth = rowData.getValueAsNumber( "imageWidth", this.imageWidth );
+        if( imageWidth.intValue() == 0 ) {
+            imageHeight = DefaultImageWidth;
         }
 
+        float radius = imageHeight.floatValue() * pixelRatio * 4;
+        Drawable image = tableData.loadImageWithRowData( rowData, "image", null, radius );
+        ImageView imageView = cell.getImageView();
         if( image != null ) {
-
             imageWidth = convertToRealPixels( imageWidth );
             imageHeight = convertToRealPixels( imageHeight );
-
             LayoutParams params = new ATableViewCellContainerView.LayoutParams( imageWidth.intValue(), imageHeight.intValue() );
-
             // Set margins and crop the image to fit the available space
             params.setMargins( 20, 0, 0, 0 );
-            ImageView imageView = cell.getImageView();
             imageView.setLayoutParams( params );
             imageView.setScaleType( ScaleType.CENTER_CROP );
             imageView.setAdjustViewBounds( true );
-
-            imageView.setImageDrawable( image );
         }
-        else {
-            cell.getImageView().setImageDrawable( null );
-        }
+        imageView.setImageDrawable( image );
 
         // Accessory
-        String accessory = rowData.getString("accessory", this.accessory );
+        String accessory = rowData.getValueAsString("accessory", this.accessory );
         if("None".equals( accessory ) ) {
             cell.setAccessoryType( ATableViewCellAccessoryType.None );
         }
@@ -271,8 +261,8 @@ public class TableViewCellFactory implements IOCContextAware {
         }
 
         // Background image
-        Drawable backgroundImage = tableData.loadImage( rowData.getString( "backgroundImage" ), this.backgroundImage );
-        Drawable selectedImage = tableData.loadImage( rowData.getString( "selectedBackgroundImage" ), this.selectedBackgroundImage );
+        Drawable backgroundImage = tableData.loadImageWithRowData( rowData, "backgroundImage", this.backgroundImage );
+        Drawable selectedImage = tableData.loadImageWithRowData( rowData, "selectedBackgroundImage", this.selectedBackgroundImage );
 
         StateListDrawable stateListDrawable = new StateListDrawable();
         if( backgroundImage != null ) {
@@ -308,8 +298,8 @@ public class TableViewCellFactory implements IOCContextAware {
     }
 
     public Number heightForRowAtIndexPath(NSIndexPath indexPath) {
-        ValueMap rowData = tableData.getRowDataForIndexPath( indexPath );
-        return rowData.getNumber("height", this.height );
+        Configuration rowData = tableData.getRowDataForIndexPath( indexPath );
+        return rowData.getValueAsNumber("height", height );
     }
 
     /**

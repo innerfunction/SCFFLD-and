@@ -31,7 +31,6 @@ import com.innerfunction.scffld.Message;
 import com.innerfunction.scffld.app.AppContainer;
 import com.innerfunction.scffld.app.ViewController;
 import com.innerfunction.uri.Resource;
-import com.innerfunction.util.ValueMap;
 
 import com.nakardo.atableview.foundation.NSIndexPath;
 import com.nakardo.atableview.protocol.ATableViewDataSource;
@@ -182,8 +181,8 @@ public class TableViewController extends ViewController implements IOCContainerA
     }
 
     public void didSelectRowAtIndexPath(com.nakardo.atableview.view.ATableView tableView, NSIndexPath indexPath) {
-        ValueMap rowData = tableData.getRowDataForIndexPath( indexPath );
-        String action = rowData.getString("action");
+        Configuration rowData = tableData.getRowDataForIndexPath( indexPath );
+        String action = rowData.getValueAsString("action");
         if( action != null ) {
             AppContainer.getAppContainer().postMessage( action, TableViewController.this );
             tableData.clearFilter();
@@ -284,28 +283,43 @@ public class TableViewController extends ViewController implements IOCContainerA
     }
 
     public void loadContent() {
-        List data = null;
         if( content == null ) {
             Log.w( Tag, "No content specified");
         }
-        else if( content instanceof List ) {
-            data = (List)content;
-        }
         else if( content instanceof Resource ) {
-            Resource rsc = (Resource)content;
-            Object jsonData = rsc.asJSONData();
-            if( jsonData instanceof List ) {
-                data = (List)jsonData;
-            }
-            tableData.setURIHandler( rsc.getURIHandler() );
+            setRows( ((Resource)content).asConfiguration() );
         }
-        else {
-            Log.w( Tag, String.format("Unable to load content of type %s", content.getClass() ) );
+        else if( content instanceof Configuration ) {
+            setRows( (Configuration)content );
         }
-        if( data != null ) {
-            data = formatData( data );
-            tableData.setData( data );
-            // Re-apply the in-scope filter.
+        else if( content instanceof List ) {
+            setRowsArray( (List)content );
+        }
+    }
+
+    /**
+     * Set the table's data.
+     * Use this to configure the table's rows data.
+     * @param rows A configuration object containing row data.
+     */
+    public void setRows(Configuration rows) {
+        Object sourceData = rows.getSourceData();
+        if( sourceData instanceof List ) {
+            rows.setData( formatData( (List)sourceData ) );
+            tableData.setRowsConfiguration( rows );
+            applyFilterName( filterName );
+        }
+    }
+
+    /**
+     * Set the table's data.
+     * Use this when passing row data programmatically.
+     * @param rows An array of row data.
+     */
+    public void setRowsArray(List rows) {
+        if( rows != null ) {
+            rows = formatData( rows );
+            tableData.setRowsData( rows );
             applyFilterName( filterName );
         }
     }

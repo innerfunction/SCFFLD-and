@@ -24,15 +24,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.Log;
 import android.util.LruCache;
 
+import com.innerfunction.scffld.Configuration;
 import com.innerfunction.uri.Resource;
-import com.innerfunction.uri.URIHandler;
 import com.innerfunction.util.Images;
-import com.innerfunction.util.TypeConversions;
-import com.innerfunction.util.ValueMap;
 
+import com.innerfunction.util.Null;
 import com.nakardo.atableview.foundation.NSIndexPath;
 
 /**
@@ -53,14 +53,19 @@ public class TableData {
      * UI thread (i.e. as a table row is being created); this is effectively single-threaded
      * operation, so no synchronization is necessary before calling cache methods.
      */
-    static final LruCache<String,Drawable> ImageCache = new LruCache<String,Drawable>( CacheSize ) {
+    static final LruCache<Object,Drawable> ImageCache = new LruCache<Object,Drawable>( CacheSize ) {
         @Override
-        protected int sizeOf(String key, Drawable image) {
+        protected int sizeOf(Object key, Drawable image) {
             // NOTE Drawable doesn't provide any method for getting the image size, so instead
             // estimate the size assuming a 32 bit (4 byte) pixel depth.
             return image.getIntrinsicWidth() * image.getIntrinsicHeight() * 4;
         }
     };
+
+    /**
+     * An object used to represent misses in the image cache.
+     */
+    static final Drawable NullImage = new ShapeDrawable();
 
     /** Interface for wrapping table data filter predicates. */
     public interface FilterPredicate {
@@ -77,12 +82,15 @@ public class TableData {
     private boolean grouped;
     /** A list of data fields to check when filtering by a search term. */
     private List<String> searchFieldNames;
+    /** An empty configuration object. Used as the rows config when loading data from a list. */
+    private Configuration emptyConfiguration;
+    /**
+     * A configuration object used to return row data.
+     * This is used to allow any URI references within data to resolve correctly.
+     */
+    private Configuration currentRowData;
     /** A delegate object for modifying resolved data values. */
     private TableDataDelegate delegate;
-    /** An object for handling type conversions. */
-    private TypeConversions typeConversions;
-    /** A handler for resolving internal URIs. */
-    private URIHandler uriHandler;
 
     public TableData(Context context) {
         data = new ArrayList();
@@ -90,7 +98,7 @@ public class TableData {
         sectionTitles = new ArrayList<>();
         grouped = false;
         searchFieldNames = Arrays.asList("title", "description");
-        typeConversions = TypeConversions.instanceForContext( context );
+        emptyConfiguration = new Configuration( context );
     }
 
     public void reset() {
@@ -102,17 +110,31 @@ public class TableData {
         delegate = tableDataDelegate;
     }
 
-    public void setURIHandler(URIHandler uriHandler) {
-        this.uriHandler = uriHandler;
+    public void setRowsConfiguration(Configuration rowsConfiguration) {
+        this.currentRowData = new Configuration( Collections.EMPTY_MAP, rowsConfiguration );
+        List rowsData;
+        Object sourceData = rowsConfiguration.getSourceData();
+        if( sourceData instanceof List ) {
+            rowsData = (List)sourceData;
+        }
+        else {
+            rowsData = Collections.EMPTY_LIST;
+        }
+        _setRowsData( rowsData );
+    }
+
+    public void setRowsData(List rowsData) {
+        this.currentRowData = new Configuration( Collections.EMPTY_MAP, emptyConfiguration );
+        _setRowsData( rowsData );
     }
 
     /**
-     * Set the table data.
+     * Set the table row data.
      *
-     * @param listData
+     * @param rowsData
      */
     @SuppressWarnings("unchecked")
-    public void setData(List listData) {
+    private void _setRowsData(List rowsData) {
         // Test whether the data is grouped or non-grouped. If grouped, then extract section header
         // titles from the data.
         // This method allows grouped data to be presented in one of two ways, and assumes that the
@@ -126,14 +148,14 @@ public class TableData {
         // 'sectionTitle' and 'sectionData' properties.
         // Data can also be presented as an array of strings, in which case each string is used as a
         // row title.
-        int dataSize = listData.size();
-        Object firstItem = dataSize > 0 ? listData.get(0) : null;
+        int dataSize = rowsData.size();
+        Object firstItem = dataSize > 0 ? rowsData.get(0) : null;
 
         // Allow a table section to be represented using a List or String array.
         if( firstItem instanceof List || firstItem instanceof String[] ) {
             grouped = true;
             List<String> titles = new ArrayList<>( dataSize );
-            for( Object section : listData ) {
+            for( Object section : rowsData ) {
                 Map row = (Map)((List)section).get( 0 );
                 if (row != null) {
                     titles.add( (String)row.get("title") );
@@ -142,7 +164,7 @@ public class TableData {
                     titles.add("");
                 }
             }
-            data = listData;
+            data = rowsData;
             sectionTitles = titles;
         }
         else if( firstItem instanceof Map ) {
@@ -151,7 +173,7 @@ public class TableData {
                 grouped = true;
                 List<String> titles = new ArrayList<>( dataSize );
                 List sections = new ArrayList( dataSize );
-                for( Object section : listData ) {
+                for( Object section : rowsData ) {
                     Map sectionMap = (Map)section;
                     String sectionTitle = null;
                     if( delegate != null ) {
@@ -169,14 +191,14 @@ public class TableData {
             }
             else {
                 grouped = false;
-                data = listData;
+                data = rowsData;
             }
 
         }
         else if( firstItem instanceof String ) {
             grouped = false;
             List<Map<String,String>> rows = new ArrayList<>( dataSize );
-            for( Object title : listData ) {
+            for( Object title : rowsData ) {
                 Map<String,String> row = new HashMap<>();
                 row.put("title", (String)title );
                 rows.add( row );
@@ -193,7 +215,7 @@ public class TableData {
     /**
      * Get row data for an index path.
      */
-    public ValueMap getRowDataForIndexPath(NSIndexPath indexPath) {
+    public Configuration getRowDataForIndexPath(NSIndexPath indexPath) {
         Map rowData = null;
         int section = indexPath.getSection();
         int row = indexPath.getRow();
@@ -211,9 +233,10 @@ public class TableData {
             }
         }
         if( rowData == null ) {
-            rowData = new HashMap();
+            rowData = Collections.EMPTY_MAP;
         }
-        return new ValueMap( rowData, typeConversions );
+        currentRowData.setConfigData( rowData );
+        return currentRowData;
     }
 
     /**
@@ -339,7 +362,6 @@ public class TableData {
         visibleData = data;
     }
 
-    // ==== Setters and Getters
     public void setSearchFieldNames(List<String> searchFieldNames) {
         this.searchFieldNames = searchFieldNames;
     }
@@ -357,59 +379,36 @@ public class TableData {
 
     // Image handlers.
 
-    public Drawable loadImage(String imageName) {
-        return loadImage( imageName, null );
+    public Drawable loadImageWithRowData(Configuration rowData, String dataName) {
+        return loadImageWithRowData( rowData, dataName, null, 0.0f );
+    }
+    public Drawable loadImageWithRowData(Configuration rowData, String dataName, Drawable defaultImage) {
+        return loadImageWithRowData( rowData, dataName, defaultImage, 0.0f );
     }
 
-    public Drawable loadImage(String imageName, Drawable defaultImage) {
-        if( imageName == null ) {
-            return null;
-        }
-        Drawable result = ImageCache.get( imageName );
-        if( result == null ) {
-            // Image names beginning with '@' are URI references to the image.
-            if( imageName.startsWith("@") && uriHandler != null ) {
-                // TODO Note that currently the URI handler is set by the table view *only* when
-                // TODO the table data is loaded from a URI which dereferences to a resource;
-                // TODO To fix, the uriHandler should default to the global handler initially.
-                String imageURI = imageName.substring( 1 );
-                Object imageRsc = uriHandler.dereference( imageURI );
-                if( imageRsc instanceof Resource ) {
-                    result = ((Resource)imageRsc).asImage();
+    public Drawable loadImageWithRowData(Configuration rowData, String dataName, Drawable defaultImage, float radius) {
+        Drawable result = null;
+        Object imageRef = rowData.getUnmodifiedValue( dataName );
+        if( imageRef != null ) {
+            if( radius > 0.0f ) {
+                imageRef = String.format( "%s.radius:%f", imageRef, radius );
+            }
+            result = ImageCache.get( imageRef );
+            if( result == null ) {
+                result = rowData.getValueAsImage( dataName );
+                if( result == null ) {
+                    result = defaultImage;
                 }
-                else if( imageRsc instanceof Drawable ) {
-                    result = (Drawable)imageRsc;
+                if( result == null ) {
+                    result = NullImage;
                 }
-                else {
-                    Log.w( Tag, String.format("Image resource not found: %s", imageURI ) );
+                else if( radius > 0.0f && result instanceof BitmapDrawable ) {
+                    result = Images.toRoundedCorner( (BitmapDrawable)result, radius );
                 }
             }
-            else {
-                result = typeConversions.asImage( imageName );
-            }
+            ImageCache.put( imageRef, result );
         }
-        if( result != null ) {
-            ImageCache.put( imageName, result );
-        }
-        if( result == null ) {
-            result = defaultImage;
-        }
-        return result;
+        return result == NullImage ? null : result;
     }
 
-    public Drawable loadRoundedImage(String imageName, float radius) {
-        String cacheKey = String.format("rounded.%s.radius.%f", imageName, radius );
-        Drawable rounded = ImageCache.get( cacheKey );
-        Log.d(Tag, String.format("%s %s", cacheKey, rounded == null ? "miss" : "hit"));
-        if( rounded == null ) {
-            // Add rounded corners to image
-            // NOTE: This code currently displays the image as a complete circle.
-            BitmapDrawable image = (BitmapDrawable)loadImage( imageName );
-            if( image != null ) {
-                rounded = Images.toRoundedCorner( image, radius );
-                ImageCache.put( cacheKey, rounded );
-            }
-        }
-        return rounded;
-    }
 }

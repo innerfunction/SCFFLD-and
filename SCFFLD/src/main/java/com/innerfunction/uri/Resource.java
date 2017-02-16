@@ -18,6 +18,7 @@ import android.graphics.drawable.Drawable;
 
 import java.net.URI;
 
+import com.innerfunction.scffld.Configuration;
 import com.innerfunction.util.TypeConversions;
 
 /**
@@ -109,6 +110,10 @@ public class Resource implements URIHandlerAware {
 
     public Drawable asImage() {
         return getTypeConversions().asImage( data );
+    }
+
+    public Configuration asConfiguration() {
+        return new Configuration( this );
     }
 
     public Object asRepresentation(String name) {
