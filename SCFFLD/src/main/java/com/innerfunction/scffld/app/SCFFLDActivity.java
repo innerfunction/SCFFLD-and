@@ -13,11 +13,14 @@
 // limitations under the License
 package com.innerfunction.scffld.app;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ViewFlipper;
 
 import com.innerfunction.scffld.R;
 
@@ -28,13 +31,49 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
 
     static final String Tag = SCFFLDActivity.class.getSimpleName();
 
-    public enum IntentActions { ViewUUID };
-
+    /** A layout for flipping between the splash screen and main app views. */
+    private ViewFlipper layoutViewFlipper;
+    /** The time the splashscreen started being displayed at. */
+    private long splashScreenDisplayTime = 0;
+    /** A flag indicating whether the root view has been loaded. */
+    private boolean rootViewLoaded = false;
     /**
-     * A UUID for the activity's view.
-     * Used to fetch the view controller instance from the app container.
+     * The minimum time, in milliseconds, for which the splash screen should be displayed.
+     * The app's main root view will be displayed once this time has elapsed.
+     * This value can be configured within the application declaration in the app manifest by using
+     * a meta-data tag with a name of 'splashScreenDelay', e.g.:
+     *
+     *  <meta-data android:name="splashScreenDelay" android:value="1000" />
+     *
+     * Set this value to 0 or less to disable the splashscreen.
      */
-    private String viewUUID;
+    protected int splashScreenDelay = 2000;
+    /**
+     * The splash screen layout ID..
+     * Defaults to R.layout.splashscreen_layout. Can be configured within the application
+     * declaration in the app manifest by using a meta-data tag with a name of
+     * 'splashScreenLayout', e.g:
+     *
+     *  <meta-data android:name="splashScreenLayout" android:resource="@R.layout.xxx" />
+     *
+     */
+    protected int splashScreenLayout = R.layout.splashscreen_layout;
+
+    public void setSplashDelay(int delay) {
+        this.splashScreenDelay = delay;
+    }
+
+    public int getSplashDelay() {
+        return splashScreenDelay;
+    }
+
+    public void setSplashScreenLayout(int id) {
+        this.splashScreenLayout = id;
+    }
+
+    public int setSplashScreenLayout() {
+        return splashScreenLayout;
+    }
 
     /**
      * The app's default background color.
@@ -42,85 +81,78 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
     protected int appBackgroundColor = Color.LTGRAY;
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent( intent );
-        /*
-        String dispatchAction = null;
-        // Check for the app being opened using a custom URL.
-        if( Intent.ACTION_VIEW.equals( intent.getAction() ) ) {
-            Uri url = intent.getData();
-            if( url != null ) {
-                dispatchAction = url.toString();
-            }
-        }
-        */
-        // TODO Allow apps to skip the splashscreen and start directly into a SCFFLDActivity
-        // TODO Check here for Intent.ACTION_MAIN.equals( intent.getAction() )
-        // TODO (Is this sufficient, or should also test for category == LAUNCHER?)
-        // TODO And then set viewUUID to something that will identify the root view to the container
-        /* TODO Following code moved to onCreate; confirm this can be completely removed.
-        viewUUID = intent.getStringExtra( IntentActions.ViewUUID.name() );
-        */
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
+        // The following is to avoid a blank white screen being briefly displayed as the activity
+        // loads; taken from http://stackoverflow.com/a/20560190 but note comment below that at
+        // http://stackoverflow.com/a/34960302
+        setTheme( android.R.style.Theme_Translucent_NoTitleBar );
+
         super.onCreate( savedInstanceState );
 
         setContentView( R.layout.view_activity_layout );
 
-        // TODO Assuming here that if the activity is being recreated then viewUUID will have been
-        // TODO recovered by an onRestoreInstanceState(...) method call
-
-        if( viewUUID == null ) {
-            viewUUID = getIntent().getStringExtra( IntentActions.ViewUUID.name() );
-        }
-
         AppContainer appContainer = AppContainer.getAppContainer();
         appBackgroundColor = appContainer.getAppBackgroundColor();
-        // Check for a container instantiated view.
-        if( viewUUID != null ) {
-            try {
-                showView( (T)appContainer.getViewForUUID( viewUUID ) );
-            }
-            catch(ClassCastException e) {
-                // Shouldn't happen if everything is setup correctly.
-                Log.e( Tag, String.format( "View instance for %s is not the correct type", viewUUID ) );
-            }
-        }
 
+        this.layoutViewFlipper = (ViewFlipper)findViewById( R.id.viewflipper );
+
+        if( splashScreenDelay > 0 && splashScreenLayout != -1 ) {
+            // Add the splash screen layout to this activity's layout.
+            View splashScreenView = getLayoutInflater().inflate( splashScreenLayout, layoutViewFlipper );
+            ViewGroup splashScreenContainer = (ViewGroup)layoutViewFlipper.findViewById( R.id.splashscreen_container );
+            splashScreenContainer.addView( splashScreenView );
+            // Display the splash screen layout and record the time.
+            layoutViewFlipper.setDisplayedChild( 0 );
+            this.splashScreenDisplayTime = System.currentTimeMillis();
+        }
+        else {
+            // No splash screen, display the main content child view.
+            layoutViewFlipper.setDisplayedChild( 1 );
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        AppContainer.getAppContainer().setCurrentActivity( this );
+        final AppContainer appContainer = AppContainer.getAppContainer();
+        appContainer.setCurrentActivity( this );
+        if( !rootViewLoaded ) {
+            // Create a task to display the app's root view.
+            Runnable showRootViewTask = new Runnable() {
+                @Override
+                public void run() {
+                    if( appContainer.isRunning() ) {
+                        appContainer.showRootView();
+                        layoutViewFlipper.setDisplayedChild( 1 );
+                        splashScreenDisplayTime = 0;
+                        rootViewLoaded = true;
+                    }
+                    else if( !appContainer.isStartFailure() ) {
+                        // App container not fully started yet, reschedule the task to try again
+                        // after a small additional delay.
+                        new Handler().postDelayed( this, 250 );
+                    }
+                }
+            };
+            // Decide whether to delay before displaying the root view. If a splash screen
+            // has been displayed then 'delay' below will probably be positive; otherwise, no
+            // splash screen is shown OR there has already been a sufficiently long delay
+            // between when it was shown and now.
+            long delay = splashScreenDelay - (System.currentTimeMillis() - splashScreenDisplayTime);
+            if( delay > 0 ) {
+                new Handler().postDelayed( showRootViewTask, delay );
+            }
+            else {
+                // No delay, display root view immediately.
+                showRootViewTask.run();
+            }
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         AppContainer.getAppContainer().clearCurrentActivity( this );
-    }
-
-    @Override
-    public void onDestroy() {
-        if( viewUUID != null ) {
-            AppContainer.getAppContainer().removeViewForUUID( viewUUID );
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        if( viewUUID != null ) {
-            bundle.putString( IntentActions.ViewUUID.name(), viewUUID );
-        }
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle bundle) {
-        viewUUID = bundle.getString( IntentActions.ViewUUID.name() );
     }
 
     public abstract void showView(T view);

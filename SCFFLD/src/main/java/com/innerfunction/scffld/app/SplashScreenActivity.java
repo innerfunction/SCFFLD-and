@@ -23,6 +23,7 @@ import com.innerfunction.scffld.R;
  * A basic activity type for displaying a splashscreen before the main app UI loads.
  *
  * Attached by juliangoacher on 12/07/16.
+ * @deprecated
  */
 public class SplashScreenActivity extends Activity {
 

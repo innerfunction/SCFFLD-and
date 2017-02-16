@@ -20,22 +20,45 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/titlebar"
-        android:minHeight="@dimen/abc_action_bar_default_height_material"
+    <ViewFlipper
+        android:id="@+id/viewflipper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:titleTextColor="@android:color/white"
-        android:background="@color/accent_material_dark"
-        android:elevation="4dp">
+        android:layout_height="match_parent"
+        android:inAnimation="@android:anim/fade_in"
+        android:outAnimation="@android:anim/fade_out">
 
-    </android.support.v7.widget.Toolbar>
+        <FrameLayout android:id="@+id/splashscreen_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <FrameLayout
-                 android:id="@+id/view_container"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent">
+        </FrameLayout>
 
-    </FrameLayout>
+        <LinearLayout android:id="@+id/view_layout"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/titlebar"
+                android:minHeight="@dimen/abc_action_bar_default_height_material"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:titleTextColor="@android:color/white"
+                android:background="@color/accent_material_dark"
+                android:elevation="4dp">
+
+            </android.support.v7.widget.Toolbar>
+
+            <FrameLayout
+                android:id="@+id/view_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </ViewFlipper>
+
 
 </LinearLayout>

@@ -15,6 +15,7 @@ package com.innerfunction.scffld.app;
 
 import com.innerfunction.scffld.Configuration;
 import com.innerfunction.uri.CompoundURI;
+import com.innerfunction.uri.Resource;
 import com.innerfunction.uri.URIScheme;
 
 import java.util.Map;
@@ -42,7 +43,7 @@ public class MakeScheme implements URIScheme {
 
     public Object dereference(CompoundURI uri, Map<String,Object> params) {
         Object result = null;
-        Configuration config = null
+        Configuration config = null;
         String name = uri.getName();
         if( name != null && name.length() > 0 ) {
             // Build a pattern.
@@ -60,7 +61,7 @@ public class MakeScheme implements URIScheme {
             }
         }
         if( config != null ) {
-            result = container.buildObject( config, params, uri.toString() );
+            result = container.buildObjectWithData( config, params, uri.toString() );
         }
 
         return result;

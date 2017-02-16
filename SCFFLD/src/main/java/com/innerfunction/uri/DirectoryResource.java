@@ -36,7 +36,7 @@ public class DirectoryResource extends FileResource {
         File file = new File( super.file, path );
         if( file.exists() && !file.isDirectory() ) {
             // Create a URI for the file resource by appending the file path to this resource's path.
-            String name = Paths.join( super.uri.getPath(), path );
+            String name = Paths.join( super.uri.getName(), path );
             CompoundURI uri = super.uri.copyOfWithName( name );
             return new FileResource( super.context, file, uri );
         }

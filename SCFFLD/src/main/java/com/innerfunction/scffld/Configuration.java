@@ -370,7 +370,7 @@ public class Configuration {
      * null if no value is found.
      */
     public Object getValueAs(String keyPath, Representation representation) {
-        Object value = KeyPath.resolve( keyPath, data, representation, keyPathModifier );
+        Object value = KeyPath.resolve( keyPath, configData, representation, keyPathModifier );
         // If something other than the raw representation is required then try to convert:
         // * configuration: See the asConfiguration: method;
         // * all other representations are passed to TypeConversions.

@@ -208,7 +208,7 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
      *                      instantiations that it is known may fail.
      * @return The instantiated and fully configured object.
      */
-    public Object buildObject(Configuration configuration, String identifier, boolean quiet) {
+    public Object buildObjectWithConfiguration(Configuration configuration, String identifier, boolean quiet) {
         Object object = null;
         if( configuration.hasValue("-factory") ) {
             // The configuration specifies an object factory, so resolve the factory object and

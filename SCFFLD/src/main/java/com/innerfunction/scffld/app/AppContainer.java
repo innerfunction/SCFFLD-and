@@ -66,7 +66,7 @@ public class AppContainer extends Container {
     /**
      * The standard core type mappings.
      */
-    static final Map<String,String> CoreTypes = m(
+    static final Map<String,Object> CoreTypes = m(
         // Types are coded this way so that (1) class references can be checked at compile
         // time and (2) refactor tools can update the mapping in the case of class renames.
         kv("View",              ViewController.class.getCanonicalName() ),
@@ -416,33 +416,6 @@ public class AppContainer extends Container {
     }
 
     /**
-     * Register a view to be displayed once a new activity has launched.
-     * @return The UUID the view has been registered under.
-     */
-    public String registerPendingView(Object view) {
-        String uuid = UUID.randomUUID().toString();
-        globals.put( uuid, view );
-        return uuid;
-    }
-
-    /**
-     * Get a view instance by UUID.
-     * Used by SCFFLDActivity to fetch the activity's view after it has been launched.
-     */
-    public Object getViewForUUID(String uuid) {
-        return globals.get( uuid );
-    }
-
-    /**
-     * Remove a view instance, identified by its UUID.
-     * Used in conjunction with getViewForUUID(...), and called by the activity when it knows that
-     * the view is no longer needed.
-     */
-    public void removeViewForUUID(String uuid) {
-        globals.remove( uuid );
-    }
-
-    /**
      * Post a message.
      * @param message   A string containing a message URI. Normally this is specified using a
      *                  post: URI, but the method will attempt to promote other URIs to messages.
@@ -659,11 +632,15 @@ public class AppContainer extends Container {
             currentActivity.showView( view );
         }
         else {
+            // TODO: Consider whether to support launching a new activity of the appropriate type.
+            /*
             String uuid = registerPendingView( view );
             Intent intent = new Intent( androidContext, activityType );
             intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
             intent.putExtra( SCFFLDActivity.IntentActions.ViewUUID.name(), uuid );
             androidContext.startActivity( intent );
+            */
+            Log.w(Tag, String.format("Can't open view of type %s with current activity", activityType ) );
         }
     }
 

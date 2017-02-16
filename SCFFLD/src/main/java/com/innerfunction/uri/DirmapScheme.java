@@ -13,9 +13,11 @@
 // limitations under the License
 package com.innerfunction.uri;
 
+import android.content.Context;
+import android.util.ArraySet;
 import android.util.LruCache;
 
-import java.util.ArraySet;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -89,7 +91,7 @@ public class DirmapScheme implements URIScheme {
         }
 
         private FileResource resourceForKey(Object key) {
-            String path = key.concat(".json");
+            String path = key.toString().concat(".json");
             return dirResource.resourceForPath( path );
         }
 
@@ -118,7 +120,7 @@ public class DirmapScheme implements URIScheme {
         }
 
         @Override
-        public String get(Object key) {
+        public Object get(Object key) {
             // Given any key, attempt to load the contents of a file named <key>.json
             // and return its parsed contents as the result.
             FileResource fileRsc = resourceForKey( key );
@@ -137,7 +139,7 @@ public class DirmapScheme implements URIScheme {
         public Set<String> keySet() {
             if( keySet == null ) {
                 String[] files = dirResource.list();
-                keySet = new ArraySet<>( files );
+                keySet = new ArraySet<>();
                 for( String filename : files ) {
                     if( filename.endsWith(".json") ) {
                         String key = filename.substring( filename.length() - 5 );
@@ -171,7 +173,7 @@ public class DirmapScheme implements URIScheme {
         }
 
         @Override
-        public Collection<String> values() {
+        public Collection<Object> values() {
             return null;
         }
     }
