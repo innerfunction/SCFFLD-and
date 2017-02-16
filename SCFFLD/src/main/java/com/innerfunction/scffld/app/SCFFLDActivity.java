@@ -31,10 +31,6 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
 
     static final String Tag = SCFFLDActivity.class.getSimpleName();
 
-    /** A layout for flipping between the splash screen and main app views. */
-    private ViewFlipper layoutViewFlipper;
-    /** The time the splashscreen started being displayed at. */
-    private long splashScreenDisplayTime = 0;
     /** A flag indicating whether the root view has been loaded. */
     private boolean rootViewLoaded = false;
     /**
@@ -48,16 +44,6 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
      * Set this value to 0 or less to disable the splashscreen.
      */
     protected int splashScreenDelay = 2000;
-    /**
-     * The splash screen layout ID..
-     * Defaults to R.layout.splashscreen_layout. Can be configured within the application
-     * declaration in the app manifest by using a meta-data tag with a name of
-     * 'splashScreenLayout', e.g:
-     *
-     *  <meta-data android:name="splashScreenLayout" android:resource="@R.layout.xxx" />
-     *
-     */
-    protected int splashScreenLayout = R.layout.splashscreen_layout;
 
     public void setSplashDelay(int delay) {
         this.splashScreenDelay = delay;
@@ -65,14 +51,6 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
 
     public int getSplashDelay() {
         return splashScreenDelay;
-    }
-
-    public void setSplashScreenLayout(int id) {
-        this.splashScreenLayout = id;
-    }
-
-    public int setSplashScreenLayout() {
-        return splashScreenLayout;
     }
 
     /**
@@ -88,33 +66,19 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
         setTheme( android.R.style.Theme_Translucent_NoTitleBar );
 
         super.onCreate( savedInstanceState );
-
+        // Apply meta-data settings in the manifest to this activity.
+        ManifestMetaData.applyTo( this );
+        // Load the view.
         setContentView( R.layout.view_activity_layout );
-
-        AppContainer appContainer = AppContainer.getAppContainer();
-        appBackgroundColor = appContainer.getAppBackgroundColor();
-
-        this.layoutViewFlipper = (ViewFlipper)findViewById( R.id.viewflipper );
-
-        if( splashScreenDelay > 0 && splashScreenLayout != -1 ) {
-            // Add the splash screen layout to this activity's layout.
-            View splashScreenView = getLayoutInflater().inflate( splashScreenLayout, layoutViewFlipper );
-            ViewGroup splashScreenContainer = (ViewGroup)layoutViewFlipper.findViewById( R.id.splashscreen_container );
-            splashScreenContainer.addView( splashScreenView );
-            // Display the splash screen layout and record the time.
-            layoutViewFlipper.setDisplayedChild( 0 );
-            this.splashScreenDisplayTime = System.currentTimeMillis();
-        }
-        else {
-            // No splash screen, display the main content child view.
-            layoutViewFlipper.setDisplayedChild( 1 );
-        }
+        // Set the background colour.
+        appBackgroundColor = AppContainer.getAppContainer().getAppBackgroundColor();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         final AppContainer appContainer = AppContainer.getAppContainer();
+        final ViewFlipper viewFlipper = (ViewFlipper)findViewById( R.id.viewflipper );
         appContainer.setCurrentActivity( this );
         if( !rootViewLoaded ) {
             // Create a task to display the app's root view.
@@ -123,8 +87,7 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
                 public void run() {
                     if( appContainer.isRunning() ) {
                         appContainer.showRootView();
-                        layoutViewFlipper.setDisplayedChild( 1 );
-                        splashScreenDisplayTime = 0;
+                        viewFlipper.setDisplayedChild( 1 );
                         rootViewLoaded = true;
                     }
                     else if( !appContainer.isStartFailure() ) {
@@ -134,13 +97,8 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
                     }
                 }
             };
-            // Decide whether to delay before displaying the root view. If a splash screen
-            // has been displayed then 'delay' below will probably be positive; otherwise, no
-            // splash screen is shown OR there has already been a sufficiently long delay
-            // between when it was shown and now.
-            long delay = splashScreenDelay - (System.currentTimeMillis() - splashScreenDisplayTime);
-            if( delay > 0 ) {
-                new Handler().postDelayed( showRootViewTask, delay );
+            if( splashScreenDelay > 0 ) {
+                new Handler().postDelayed( showRootViewTask, splashScreenDelay );
             }
             else {
                 // No delay, display root view immediately.
