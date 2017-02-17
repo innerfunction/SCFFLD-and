@@ -235,7 +235,7 @@ public class TableData {
         if( rowData == null ) {
             rowData = Collections.EMPTY_MAP;
         }
-        currentRowData.setConfigData( rowData );
+        currentRowData.setData( rowData );
         return currentRowData;
     }
 

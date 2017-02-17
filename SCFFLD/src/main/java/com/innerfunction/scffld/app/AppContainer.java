@@ -565,13 +565,19 @@ public class AppContainer extends Container {
      * Start a new activity to display the app's root view.
      */
     public void showRootView() {
-        Object rootView = nameds.get("rootView");
-        if( rootView != null ) {
-            showView( rootView );
+        Object rootView = uriHandler.dereference("make:RootView");
+        if( rootView == null ) {
+            Log.e( Tag, "No root view pattern found" );
         }
-        else {
-            Log.e(Tag,"No root view component found");
+        else if( rootView instanceof View ) {
+            rootView = new ViewController( androidContext, (View)rootView );
         }
+        else if( !(rootView instanceof ViewController || rootView instanceof Fragment || rootView instanceof Intent) ) {
+            WebViewController webView = new WebViewController( androidContext );
+            webView.setContent("<p>Root view not found, check that a RootView pattern exists and defines a view instance</p>");
+            rootView = webView;
+        }
+        showView( rootView );
     }
 
     /**

@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.net.URI;
 
 import com.innerfunction.util.Files;
+import com.innerfunction.util.Paths;
 
 /**
  * An object for representing file resources.
@@ -59,6 +60,35 @@ public class FileResource extends Resource {
     /** Test whether the file represented by this resource exists. */
     public boolean exists() {
         return this.file.exists();
+    }
+
+    /** Test whether the file represents a directory on the file system. */
+    public boolean isDirectory() {
+        return this.file.isDirectory();
+    }
+
+    /**
+     * Return a resource for the file at the specified path relative to the current directory.
+     * Returns null if no file exists at the specified path.
+     */
+    public FileResource resourceForPath(String path) {
+        File rscFile = new File( file, path );
+        if( rscFile.exists() ) {
+            // Create a URI for the file resource by appending the file path to this resource's path.
+            String name = Paths.join( super.uri.getName(), path );
+            CompoundURI uri = super.uri.copyOfWithName( name );
+            return new FileResource( super.context, rscFile, uri );
+        }
+        // File not found.
+        return null;
+    }
+
+    /**
+     * List the files contained by the directory.
+     * Returns null if the current file resource doesn't represent a directory.
+     */
+    public String[] list() {
+        return file.list();
     }
 
     /** Return the string contents of the file resource. */

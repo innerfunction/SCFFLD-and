@@ -33,7 +33,7 @@ public class Assets {
     static final String Tag = Assets.class.getSimpleName();
 
     private AssetManager assetManager;
-    private Map<String,Set<String>> assetNamesByPath;
+    private Map<String,String[]> assetNamesByPath;
 
     public Assets(Context context) {
         this.assetManager = context.getAssets();
@@ -42,7 +42,7 @@ public class Assets {
 
     /** Open an input stream on a named asset. */
     public InputStream openInputStream(String name) throws IOException {
-        return this.assetManager.open( name );
+        return assetManager.open( name );
     }
 
     /** Test whether a name asset exists. */
@@ -50,9 +50,15 @@ public class Assets {
         // Note: following necessary to detect whether the referenced asset exists. This
         // is so as to be consistent in behaviour with the file based URI schemes, which
         // evaluate null if the referenced file doesn't exist.
+        String baseAssetName = Paths.basename( assetName );
         String dirPath = Paths.dirname( assetName );
-        Set<String> assetPaths = getAssetNamesUnderPath( dirPath );
-        return assetPaths.contains( Paths.basename( assetName ) );
+        String[] foundAssetNames = getAssetNamesUnderPath( dirPath );
+        for( String name : foundAssetNames ) {
+            if( name.equals( baseAssetName ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -62,19 +68,17 @@ public class Assets {
      * @param path  An assets path.
      * @return A set of asset names under path. All names are relative to path.
      */
-    public Set<String> getAssetNamesUnderPath(String path) {
-        Set<String> assetNames = null;
-        assetNames = this.assetNamesByPath.get( path );
+    public String[] getAssetNamesUnderPath(String path) {
+        String[] assetNames =  assetNamesByPath.get( path );
         if( assetNames == null ) {
             try {
-                String[] assets = this.assetManager.list( path );
-                assetNames = new HashSet<>( Arrays.asList( assets ) );
+                assetNames = assetManager.list( path );
             }
             catch(IOException e) {
                 Log.e(Tag, "Listing assets", e );
-                assetNames = new HashSet<>();
+                assetNames = new String[0];
             }
-            this.assetNamesByPath.put( path, assetNames );
+            assetNamesByPath.put( path, assetNames );
         }
         return assetNames;
     }

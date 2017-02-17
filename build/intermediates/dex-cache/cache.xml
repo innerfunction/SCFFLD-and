@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/juliangoacher/Work/GitHub/SCFFLD-and/app/build/intermediates/exploded-aar/SCFFLD-and/scffld/unspecified/jars/libs/json-simple-1.1.1.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="bf773d1d1769f687dbe0f8399c6a52e78a398181">
+        <dex dex="/Users/juliangoacher/Work/GitHub/SCFFLD-and/app/build/intermediates/pre-dexed/debug/json-simple-1.1.1_0363c8c0b075558f738d524ea1089f467272ca8b.jar" />
+    </item>
+
+</items>

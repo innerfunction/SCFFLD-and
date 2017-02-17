@@ -14,10 +14,11 @@
 package com.innerfunction.uri;
 
 import android.content.Context;
-import android.util.ArraySet;
 import android.util.LruCache;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -66,8 +67,12 @@ public class DirmapScheme implements URIScheme {
         else if( dirmap == null ) {
             // Result not found, try reading the resource for the named directory.
             Object rsc = baseScheme.dereference( uri, params );
-            if( rsc instanceof DirectoryResource ) {
-                dirmap = new Dirmap( (DirectoryResource)rsc );
+            FileResource fileRsc = null;
+            if( rsc instanceof FileResource ) {
+                fileRsc = (FileResource)rsc;
+            }
+            if( fileRsc != null && fileRsc.isDirectory() ) {
+                dirmap = new Dirmap( (FileResource)rsc );
                 dirmapCache.put( cacheKey, dirmap );
             }
             else {
@@ -81,101 +86,34 @@ public class DirmapScheme implements URIScheme {
     /**
      * A Map interface wrapper for a directory resource.
      */
-    static final class Dirmap implements Map<String,Object>, URIHandlerAware {
+    static final class Dirmap extends HashMap<String,Object> implements URIHandlerAware {
 
-        private DirectoryResource dirResource;
+        private FileResource dirResource;
         private Set<String> keySet;
 
-        Dirmap(DirectoryResource dirResource) {
+        Dirmap(FileResource dirResource) {
             this.dirResource = dirResource;
         }
 
-        private FileResource resourceForKey(Object key) {
-            String path = key.toString().concat(".json");
-            return dirResource.resourceForPath( path );
-        }
-
+        @Override
         public void setURIHandler(URIHandler uriHandler) {
             dirResource.setURIHandler( uriHandler );
-        }
-
-        @Override
-        public void clear() {
-            // Noop.
-        }
-
-        @Override
-        public boolean containsKey(Object key) {
-            return keySet().contains( key );
-        }
-
-        @Override
-        public boolean containsValue(Object value) {
-            return false;
-        }
-
-        @Override
-        public Set<java.util.Map.Entry<String, Object>> entrySet() {
-            return null;
-        }
-
-        @Override
-        public Object get(Object key) {
-            // Given any key, attempt to load the contents of a file named <key>.json
-            // and return its parsed contents as the result.
-            FileResource fileRsc = resourceForKey( key );
-            if( fileRsc != null ) {
-                return new Configuration( fileRsc );
-            }
-            return null;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return size() == 0;
-        }
-
-        @Override
-        public Set<String> keySet() {
-            if( keySet == null ) {
-                String[] files = dirResource.list();
-                keySet = new ArraySet<>();
-                for( String filename : files ) {
-                    if( filename.endsWith(".json") ) {
-                        String key = filename.substring( filename.length() - 5 );
-                        keySet.add( key );
+            // The following code populates the dirmap with its entries. Putting the initialization
+            // code here is bad design (because the map is unpopulated if this method isn't called
+            // before accessing its entries), but it ensures that the file resources used to
+            // initialize this map's configuration entries all have the correct URI scheme context.
+            String[] files = dirResource.list();
+            for( String filename : files ) {
+                if( filename.endsWith(".json") ) {
+                    FileResource fileRsc = dirResource.resourceForPath( filename );
+                    if( fileRsc != null ) {
+                        String key = filename.substring( 0, filename.length() - 5 );
+                        put( key, new Configuration( fileRsc ) );
                     }
                 }
             }
-            return keySet;
         }
 
-        @Override
-        public String put(String key, Object value) {
-            // Noop.
-            return null;
-        }
-
-        @Override
-        public void putAll(Map<? extends String, ? extends Object> all) {
-            // Noop.
-        }
-
-        @Override
-        public String remove(Object key) {
-            // Noop.
-            return null;
-        }
-
-        @Override
-        public int size() {
-            return keySet().size();
-        }
-
-        @Override
-        public Collection<Object> values() {
-            return null;
-        }
     }
     
 }

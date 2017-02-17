@@ -45,7 +45,7 @@ public class AnRResource extends FileResource {
 
     @Override
     public String getAssetName() {
-        return this.assetName;
+        return assetName;
     }
 
     @Override
@@ -56,12 +56,17 @@ public class AnRResource extends FileResource {
     @Override
     public byte[] asData() {
         try {
-            return Files.readData( openInputStream(), this.assetName );
+            return Files.readData( openInputStream(), assetName );
         }
         catch(IOException e) {
-            Log.e(LogTag, String.format("Reading data from %s", this.assetName ), e );
+            Log.e(LogTag, String.format("Reading data from %s", assetName ), e );
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return assetName;
     }
 
     /**
@@ -78,6 +83,35 @@ public class AnRResource extends FileResource {
             super( context, Integer.toString( resourceID ), uri );
             this.r = context.getResources();
             this.resourceID = resourceID;
+        }
+
+        /**
+         * Test if this resource is a directory.
+         * App resources can't represent directories, so always returns null.
+         * @return
+         */
+        @Override
+        public boolean isDirectory() {
+            return false;
+        }
+
+        /**
+         * Return a resource for the asset at the specified path relative to the current asset.
+         * App resources aren't arranged hierarchically, so relative paths don't apply and this
+         * method will always return null.
+         */
+        @Override
+        public FileResource resourceForPath(String path) {
+            return null;
+        }
+
+        /**
+         * List the files contained by the asset directory.
+         * App resources aren't arranged hierarchically, so always returns null.
+         */
+        @Override
+        public String[] list() {
+            return null;
         }
 
         @Override
@@ -119,6 +153,42 @@ public class AnRResource extends FileResource {
         public Asset(Context context, String name, Assets assets, CompoundURI uri) {
             super( context, name, uri );
             this.assets = assets;
+        }
+
+        /**
+         * Test whether this resource represents a directory (i.e. folder) under the app's assets.
+         */
+        @Override
+        public boolean isDirectory() {
+            // There is no simple, performant method for testing whether an asset is a directory or
+            // a file; simplest hack around this is to decide that all assets are directories.
+            return true;
+        }
+
+        /**
+         * Return a resource for the asset at the specified path relative to the current asset.
+         * Returns null if no file exists at the specified path. Assumes that the current asset is
+         * a directory; if not, then no asset will be found at the requested path anyway and so
+         * null will be returned.
+         */
+        @Override
+        public FileResource resourceForPath(String path) {
+            String assetPath = Paths.join( getAssetName(), path );
+            if( assets.assetExists( assetPath ) ) {
+                CompoundURI uri = super.uri.copyOfWithName( assetPath );
+                return new Asset( getContext(), assetPath, assets, uri );
+            }
+            // Asset not found.
+            return null;
+        }
+
+        /**
+         * List the files contained by the asset directory.
+         * Assumes that the current asset resource does represent a directory.
+         */
+        @Override
+        public String[] list() {
+            return assets.getAssetNamesUnderPath( getAssetName() );
         }
 
         @Override

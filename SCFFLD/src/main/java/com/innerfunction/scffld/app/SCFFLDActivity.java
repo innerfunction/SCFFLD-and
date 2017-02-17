@@ -13,9 +13,11 @@
 // limitations under the License
 package com.innerfunction.scffld.app;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -39,8 +41,9 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
      * This value can be configured within the application declaration in the app manifest by using
      * a meta-data tag with a name of 'splashScreenDelay', e.g.:
      *
-     *  <meta-data android:name="splashScreenDelay" android:value="1000" />
+     *  <meta-data android:name="ViewControllerActivity.splashScreenDelay" android:value="1000" />
      *
+     * (Note that the property name is prefixed with the name of the activity class being used).
      * Set this value to 0 or less to disable the splashscreen.
      */
     protected int splashScreenDelay = 2000;
@@ -85,12 +88,23 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
             Runnable showRootViewTask = new Runnable() {
                 @Override
                 public void run() {
-                    if( appContainer.isRunning() ) {
+                    if( appContainer.isStartFailure() ) {
+                        new AlertDialog.Builder( SCFFLDActivity.this )
+                            .setTitle("Error")
+                            .setMessage("SCFFLD startup failure")
+                            .setPositiveButton( android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    SCFFLDActivity.this.finish();
+                                }
+                            })
+                            .show();
+                    }
+                    else if( appContainer.isRunning() ) {
                         appContainer.showRootView();
                         viewFlipper.setDisplayedChild( 1 );
                         rootViewLoaded = true;
                     }
-                    else if( !appContainer.isStartFailure() ) {
+                    else {
                         // App container not fully started yet, reschedule the task to try again
                         // after a small additional delay.
                         new Handler().postDelayed( this, 250 );

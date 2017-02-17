@@ -195,19 +195,8 @@ public class Configuration {
             data = new ListBackedMap( new ArrayList( (List)data ) );
         }
         if( data instanceof Map ) {
-            // NOTE important to create a copy of the data at this point; it could be configuration
-            // data, and we don't want to rewrite it later.
-            this.configData = new HashMap( (Map<String,Object>)data );
+            this.configData = (Map<String,Object>)data;
         }
-    }
-
-    /**
-     * Set the configuration data.
-     * Use when (a) the type of the data is known, and (b) when the source data doesn't need to be
-     * copied.
-     */
-    public void setConfigData(Map<String,Object> configData) {
-        this.configData = configData;
     }
 
     /** Get the raw configuration data. */

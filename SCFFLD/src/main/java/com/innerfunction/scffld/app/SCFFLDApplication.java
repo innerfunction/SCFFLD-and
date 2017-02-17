@@ -32,11 +32,15 @@ public class SCFFLDApplication extends Application {
 
     /**
      * A URI specifying the location of the app container configuration.
-     * Defaults to a path resolving to the file at assets/SCFFLD/config.json.
+     * If not specified then the app will load the standard SCFFLD configuration.
+     * This value can be configured within the application declaration in the app manifest by using
+     * a meta-data tag with a name of 'configurationURI', e.g.:
+     *
+     *  <meta-data android:name="SCFFLDApplication.configurationURI" android:value="app:/config.json" />
+     *
+     * (Note that the property name is prefixed with the name of the application class being used).
      */
-    private String configurationURI = "app:/SCFFLD/config.json";
-    /** A container for all of the app's components. */
-    private AppContainer appContainer;
+    private String configurationURI;
 
     public SCFFLDApplication() {}
 
@@ -72,11 +76,16 @@ public class SCFFLDApplication extends Application {
                 }
             }
             // Configure and start the app container.
-            this.appContainer = AppContainer.getAppContainer( getApplicationContext() );
+            AppContainer appContainer = AppContainer.getAppContainer( getApplicationContext() );
             if( TraceEnabled) {
-                android.os.Debug.startMethodTracing("semo-trace");
+                android.os.Debug.startMethodTracing("scffld-trace");
             }
-            appContainer.loadConfiguration( configurationURI );
+            if( configurationURI != null ) {
+                appContainer.loadConfiguration( configurationURI );
+            }
+            else {
+                appContainer.loadStandardConfiguration();
+            }
             if( TraceEnabled ) {
                 android.os.Debug.stopMethodTracing();
             }

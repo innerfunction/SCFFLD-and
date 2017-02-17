@@ -125,11 +125,6 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
         this.containerConfigurer = new ObjectConfigurer( this );
     }
 
-    /** Set the type map. */
-    public void setTypes(Configuration types) {
-        this.types = (types == null) ? this.types : types;
-    }
-
     /** Add additional type name mappings to the type map. */
     public void addTypes(Object types) {
         if( types != null ) {

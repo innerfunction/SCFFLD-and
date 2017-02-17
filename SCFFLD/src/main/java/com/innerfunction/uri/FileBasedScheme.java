@@ -103,15 +103,10 @@ public class FileBasedScheme implements RelativeURIScheme {
         if( name.length() > 0 && name.charAt( 0 ) == '/' ) {
             name = name.substring( 1 );
         }
-        File file = new File( this.rootDir, name );
+        File file = new File( rootDir, name );
         Log.d(LogTag, String.format("%s -> %s", uri, file.getAbsolutePath() ) );
         if( file.exists() ) {
-            if( file.isDirectory() ) {
-                result = new DirectoryResource( this.context, file, uri );
-            }
-            else {
-                result = new FileResource( this.context, file, uri );
-            }
+            result = new FileResource( context, file, uri );
         }
         else{
             Log.d( LogTag, "File not found: " + uri );

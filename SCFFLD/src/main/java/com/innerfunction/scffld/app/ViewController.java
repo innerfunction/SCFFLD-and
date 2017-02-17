@@ -87,6 +87,11 @@ public class ViewController extends FrameLayout implements MessageReceiver, Mess
         this.layoutManager = new LayoutManager( context );
     }
 
+    public ViewController(Context context, View view) {
+        this( context );
+        this.view = view;
+    }
+
     /** Get the view's current lifecycle state. */
     public State getState() {
         return state;
