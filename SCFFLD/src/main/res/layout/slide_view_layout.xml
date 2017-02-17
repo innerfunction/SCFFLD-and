@@ -25,10 +25,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!-- The slide - e.g. navigation drawer - view -->
+    <!-- The slide - i.e. navigation drawer - view -->
     <FrameLayout
         android:id="@+id/slide"
-        android:layout_width="200dp"
+        android:layout_width="320dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"/>
 

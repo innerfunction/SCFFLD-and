@@ -168,8 +168,9 @@ public class TableData {
             sectionTitles = titles;
         }
         else if( firstItem instanceof Map ) {
-            Map<String,Object> sectionDef = (Map<String,Object>)firstItem;
-            if( sectionDef.containsKey("sectionTitle") || sectionDef.containsKey("sectionData") ) {
+            Map<String,Object> itemMap = (Map<String,Object>)firstItem;
+            // A 'rows' property on the row indicates a table section.
+            if( itemMap.containsKey("rows") ) {
                 grouped = true;
                 List<String> titles = new ArrayList<>( dataSize );
                 List sections = new ArrayList( dataSize );
@@ -180,11 +181,11 @@ public class TableData {
                         sectionTitle = delegate.resolveTableDateSectionTitle( sectionMap, this );
                     }
                     if( sectionTitle == null ) {
-                        sectionTitle = (String)sectionMap.get("sectionTitle");
+                        sectionTitle = (String)sectionMap.get("title");
                     }
                     titles.add( sectionTitle != null ? sectionTitle : "" );
-                    List sectionData = (List)sectionMap.get("sectionData");
-                    sections.add( sectionData != null ? sectionData : new ArrayList() );
+                    List sectionRows = (List)sectionMap.get("rows");
+                    sections.add( sectionRows != null ? sectionRows : new ArrayList() );
                 }
                 data = sections;
                 sectionTitles = titles;

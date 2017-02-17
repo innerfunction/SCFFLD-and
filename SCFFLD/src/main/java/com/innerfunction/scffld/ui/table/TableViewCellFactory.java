@@ -61,7 +61,7 @@ public class TableViewCellFactory implements IOCContextAware {
     private CellDecorator decorator;
 
     /** The cell display style. */
-    private String style = "Style1";
+    private String style;
     /** The default main text colour. */
     private String textColor = Black;
     /** The default text colour for a selected cell. */
@@ -176,26 +176,33 @@ public class TableViewCellFactory implements IOCContextAware {
 
         Configuration rowData = tableData.getRowDataForIndexPath( indexPath );
 
-        String style = rowData.getValueAsString("style", this.style );
-        ATableViewCell cell = dataSource.dequeueReusableCellWithIdentifier( style );
-
-        // Process title and description
+        // Read title and description.
         String title = rowData.getValueAsString("title");
         String description = rowData.getValueAsString("description");
 
+        // Resolve a style identifier for the row.
+        String style = rowData.getValueAsString("style", this.style );
+        if( style == null ) {
+            // If no style identifier and a description is provided then choose a style that will
+            // display the description.
+            if( description != null ) {
+                style = "Subtitle";
+            }
+            else {
+                style = "Style1";
+            }
+        }
+        ATableViewCell cell = dataSource.dequeueReusableCellWithIdentifier( style );
+
         if( cell == null ) {
             ATableViewCellStyle cellStyle = ATableViewCellStyle.Default;
-            if( style.equals("Style1") ) {
+            if( "Style1".equals( style ) ) {
                 cellStyle = ATableViewCellStyle.Value1;
             }
-            else if( style.equals("Style2") ) {
+            else if( "Style2".equals( style ) ) {
                 cellStyle = ATableViewCellStyle.Value2;
             }
-            else if( style.equals("Subtitle") ) {
-                cellStyle = ATableViewCellStyle.Subtitle;
-            }
-            else if( description != null ) {
-                // No style explicitly defined, but a description is provided so display it.
+            else if( "Subtitle".equals( style ) ) {
                 cellStyle = ATableViewCellStyle.Subtitle;
             }
             cell = new ATableViewCell( cellStyle, style, parent.getActivity() );
@@ -230,8 +237,11 @@ public class TableViewCellFactory implements IOCContextAware {
             imageHeight = DefaultImageWidth;
         }
 
+        /* TODO Rexamine how to support rounded images.
         float radius = imageHeight.floatValue() * pixelRatio * 4;
         Drawable image = tableData.loadImageWithRowData( rowData, "image", null, radius );
+        */
+        Drawable image = tableData.loadImageWithRowData( rowData, "image" );
         ImageView imageView = cell.getImageView();
         if( image != null ) {
             imageWidth = convertToRealPixels( imageWidth );
