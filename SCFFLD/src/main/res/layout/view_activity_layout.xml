@@ -27,11 +27,7 @@
         android:inAnimation="@android:anim/fade_in"
         android:outAnimation="@android:anim/fade_out">
 
-        <FrameLayout android:id="@+id/splashscreen_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </FrameLayout>
+        <include layout="@layout/splashscreen_layout"/>
 
         <LinearLayout android:id="@+id/view_layout"
                       android:layout_width="match_parent"
