@@ -1,0 +1,5 @@
+{
+    "-extends": "@pattern:TopBottomLayoutView",
+    "$topView": "@make:ExampleWebView",
+    "$bottomView": "@make:ExampleListView"
+}

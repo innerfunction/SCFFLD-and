@@ -1,0 +1,38 @@
+{
+    "-type": "SlideView",
+    "slideView": {
+        "-type": "ListView",
+        "rows": [
+            {
+                "title":        "Home",
+                "description":  "Return to home screen",
+                "action":       "post:mainView#home"
+            },
+            {
+                "title":        "Web view",
+                "description":  "Example of HTML page within a view",
+                "action":       "post:mainView#show+view@make:ExampleWebView"
+            },
+            {
+                "title":        "List view",
+                "description":  "Example of a grouped list view with data",
+                "action":       "post:mainView#show+view@make:ExampleListView"
+            },
+            {
+                "title":        "Layout",
+                "description":  "Example of a XIB file with embedded views",
+                "action":       "post:mainView#show+view@make:ExampleLayoutView"
+            }
+        ]
+    },
+    "mainView": {
+        "-type": "NavigationView",
+        "titleBarColor": "#000000",
+        "titleTextColor": "#FFFFFF",
+        "rootView": {
+            "-type": "WebView",
+            "hideTitleBar": true,
+            "content": "@app:/home.html"
+        }
+    }
+}

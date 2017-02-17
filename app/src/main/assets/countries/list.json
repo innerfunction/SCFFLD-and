@@ -1,0 +1,79 @@
+[
+    {
+        "title": "Europe",
+        "rows": [
+            {
+                "title": "Austria",
+                "image": "@app:austria.png",
+                "accessory": "DisclosureIndicator",
+                "action": "#show+view@make:WebView+html@app:data.json#austria"
+            },
+            {
+                "title": "Belgium",
+                "image": "@app:belgium.png"
+            },
+            {
+                "title": "Czech republic",
+                "image": "@app:czech.png"
+            },
+            {
+                "title": "Denmark",
+                "image": "@app:denmark.png"
+            },
+            {
+                "title": "Estonia",
+                "image": "@app:estonia.png"
+            }
+        ]
+    },
+    {
+        "title": "Asia",
+        "rows": [
+            {
+                "title": "Afghanistan",
+                "image": "@app:afghanistan.png"
+            },
+            {
+                "title": "Bangladesh",
+                "image": "@app:bangladesh.png"
+            },
+            {
+                "title": "China",
+                "image": "@app:china.png"
+            },
+            {
+                "title": "India",
+                "image": "@app:india.png"
+            },
+            {
+                "title": "Japan",
+                "image": "@app:japan.png"
+            }
+        ]
+    },
+    {
+        "title": "Africa",
+        "rows": [
+            {
+                "title": "Algeria",
+                "image": "@app:algeria.png"
+            },
+            {
+                "title": "Burundi",
+                "image": "@app:burundi.png"
+            },
+            {
+                "title": "Ethiopia",
+                "image": "@app:ethiopia.png"
+            },
+            {
+                "title": "Kenya",
+                "image": "@app:kenya.png"
+            },
+            {
+                "title": "Tanzania",
+                "image": "@app:tanzania.png"
+            }
+        ]
+    }
+]

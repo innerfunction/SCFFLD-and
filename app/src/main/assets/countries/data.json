@@ -1,0 +1,16 @@
+{
+    "afghanistan": "<h1>Afghanistan</h1><p>A country in <b>Asia</b></p>",
+    "algeria": "<h1>Algeria</h1><p>A country in <b>Africa</b></p>",
+    "austria": "<h1>Austria</h1><p>A country in <b>Europe</b></p>",
+    "bangladesh": "<h1>Bangladesh</h1><p>A country in <b>Asia</b></p>",
+    "belgium": "<h1>Belgium</h1><p>A country in <b>Europe</b></p>",
+    "burundi": "<h1>Burundi</h1><p>A country in <b>Africa</b></p>",
+    "china": "<h1>China</h1><p>A country in <b>Asia</b></p>",
+    "czech": "<h1>Czech republic</h1><p>A country in <b>Europe</b></p>",
+    "denmark": "<h1>Denmark</h1><p>A country in <b>Europe</b></p>",
+    "estonia": "<h1>Estonia</h1><p>A country in <b>Europe</b></p>",
+    "india": "<h1>India</h1><p>A country in <b>Asia</b></p>",
+    "japan": "<h1>Japan</h1><p>A country in <b>Asia</b></p>",
+    "kenya": "<h1>Kenya</h1><p>A country in <b>Africa</b></p>",
+    "tanzania": "<h1>Tanzania</h1><p>A country in <b>Africa</b></p>"
+}

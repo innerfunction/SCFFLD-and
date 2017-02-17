@@ -1,0 +1,7 @@
+{
+    "-type": "ListView",
+    "title": "List",
+    "sectionTitleColor": "#FFFFFF",
+    "sectionTitleBackgroundColor": "#000000",
+    "rows": "@app:countries/list.json"
+}
