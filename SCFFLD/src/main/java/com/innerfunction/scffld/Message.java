@@ -43,7 +43,7 @@ public class Message {
     }
 
     public Message(String target, String name, Map<String,Object> parameters) {
-        if( target == null ) {
+        if( target == null || target.isEmpty() ) {
             this.target = "";
             this.targetPath = new String[0];
         }

@@ -172,7 +172,7 @@ public class SlideViewController extends ViewController {
             setSlideView( (ViewController)message.getParameter( "view" ) );
             return true;
         }
-        if( message.hasName("show-slide") ) {
+        if( message.hasName("show-slide") || message.hasName("open-slide") ) {
             // Open the slide view.
             openDrawer();
             return true;

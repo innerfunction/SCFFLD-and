@@ -173,13 +173,15 @@ public class AnRResource extends FileResource {
          */
         @Override
         public FileResource resourceForPath(String path) {
+            Asset assetRsc = null;
             String assetPath = Paths.join( getAssetName(), path );
             if( assets.assetExists( assetPath ) ) {
                 CompoundURI uri = super.uri.copyOfWithName( assetPath );
-                return new Asset( getContext(), assetPath, assets, uri );
+                assetRsc = new Asset( getContext(), assetPath, assets, uri );
+                assetRsc.setURIHandler( uriHandler );
             }
-            // Asset not found.
-            return null;
+            // Else asset not found.
+            return assetRsc;
         }
 
         /**

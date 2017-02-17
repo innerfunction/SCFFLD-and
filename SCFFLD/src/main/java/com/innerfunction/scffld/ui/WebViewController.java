@@ -89,6 +89,7 @@ public class WebViewController extends ViewController {
         super( context );
         setHideTitleBar( false );
         setLayoutName("web_view_layout");
+        setBackgroundColor( Color.WHITE );
     }
 
     public void setShowLoadingSpinner(boolean showLoadingSpinner) {

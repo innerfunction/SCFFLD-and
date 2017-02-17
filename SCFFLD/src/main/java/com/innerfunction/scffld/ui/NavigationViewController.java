@@ -184,6 +184,7 @@ public class NavigationViewController extends ViewController {
         // Pause the current top view.
         topView.changeState( State.Paused );
         topView.setRunnable( false );
+        topView.setVisibility( INVISIBLE );
         // Add the new view and change to current state.
         addChildViewController( newView );
         newView.setRunnable( true );
@@ -191,6 +192,7 @@ public class NavigationViewController extends ViewController {
         // Update stack.
         views.push( newView );
         topView = newView;
+        topView.setVisibility( VISIBLE );
     }
 
     public ViewController popView() {
@@ -208,6 +210,7 @@ public class NavigationViewController extends ViewController {
             topView = views.pop();
             topView.setRunnable( true );
             topView.changeState( getState() );
+            topView.setVisibility( VISIBLE );
         }
         return poppedView;
     }
@@ -233,6 +236,7 @@ public class NavigationViewController extends ViewController {
             topView = views.getTopView();
             topView.setRunnable( true );
             topView.changeState( getState() );
+            topView.setVisibility( VISIBLE );
             popped = true;
         }
         return popped;
@@ -270,7 +274,7 @@ public class NavigationViewController extends ViewController {
 
     @Override
     public boolean receiveMessage(Message message, Object sender) {
-        if( message.hasName("show") ) {
+        if( message.hasName("show") || message.hasName("open") ) {
             Object view = message.getParameter("view");
             if( view instanceof ViewController ) {
                 if( "reset".equals( message.getParameter("navigation") ) ) {

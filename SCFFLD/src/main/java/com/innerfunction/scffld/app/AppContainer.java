@@ -569,13 +569,18 @@ public class AppContainer extends Container {
         if( rootView == null ) {
             Log.e( Tag, "No root view pattern found" );
         }
-        else if( rootView instanceof View ) {
-            rootView = new ViewController( androidContext, (View)rootView );
-        }
         else if( !(rootView instanceof ViewController || rootView instanceof Fragment || rootView instanceof Intent) ) {
-            WebViewController webView = new WebViewController( androidContext );
-            webView.setContent("<p>Root view not found, check that a RootView pattern exists and defines a view instance</p>");
-            rootView = webView;
+            if( rootView instanceof View ) {
+                // Package the view into a view controller.
+                rootView = new ViewController( androidContext, (View)rootView );
+            }
+            else {
+                // Root isn't something that can be displayed; replace with a web view displaying
+                // an explanatory message.
+                WebViewController webView = new WebViewController( androidContext );
+                webView.setContent( "<p>Root view not found, check that a RootView pattern exists and defines a view instance</p>" );
+                rootView = webView;
+            }
         }
         showView( rootView );
     }

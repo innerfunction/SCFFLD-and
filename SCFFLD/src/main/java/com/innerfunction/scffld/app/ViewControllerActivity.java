@@ -55,6 +55,10 @@ public class ViewControllerActivity extends SCFFLDActivity<ViewController> {
      * The application title bar.
      */
     private TitleBar titleBar;
+    /**
+     * The current view controller state.
+     */
+    private ViewController.State viewControllerState = null;
 
     /** A list of the different types of view transition. */
     enum ViewTransition { Replace, ShowModal, HideModal };
@@ -87,43 +91,40 @@ public class ViewControllerActivity extends SCFFLDActivity<ViewController> {
         }
     }
 
+    private void setViewControllerState(ViewController.State state) {
+        viewControllerState = state;
+        if( activeViewController != null ) {
+            activeViewController.changeState( viewControllerState );
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        if( activeViewController != null ) {
-            activeViewController.changeState( ViewController.State.Started );
-        }
+        setViewControllerState( ViewController.State.Started );
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if( activeViewController != null ) {
-            activeViewController.changeState( ViewController.State.Running );
-        }
+        setViewControllerState( ViewController.State.Running );
     }
 
     @Override
     public void onPause() {
-        if( activeViewController != null ) {
-            activeViewController.changeState( ViewController.State.Paused );
-        }
+        setViewControllerState( ViewController.State.Paused );
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        if( activeViewController != null ) {
-            activeViewController.changeState( ViewController.State.Stopped );
-        }
+        setViewControllerState( ViewController.State.Stopped );
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        if( activeViewController != null ) {
-            activeViewController.changeState( ViewController.State.Destroyed );
-        }
+        setViewControllerState( ViewController.State.Destroyed );
         super.onDestroy();
     }
 
@@ -152,8 +153,8 @@ public class ViewControllerActivity extends SCFFLDActivity<ViewController> {
         if( mainViewController == view ) {
             return;
         }
-        // Record the current view controller state, stop the current view.
-        ViewController.State state = null;
+        // If a current view then record its state and stop it.
+        ViewController.State state = viewControllerState;
         if( mainViewController != null ) {
             state = mainViewController.getState();
             mainViewController.changeState( ViewController.State.Stopped );

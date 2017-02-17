@@ -72,15 +72,17 @@ public class FileResource extends Resource {
      * Returns null if no file exists at the specified path.
      */
     public FileResource resourceForPath(String path) {
+        FileResource rsc = null;
         File rscFile = new File( file, path );
         if( rscFile.exists() ) {
             // Create a URI for the file resource by appending the file path to this resource's path.
             String name = Paths.join( super.uri.getName(), path );
             CompoundURI uri = super.uri.copyOfWithName( name );
-            return new FileResource( super.context, rscFile, uri );
+            rsc = new FileResource( super.context, rscFile, uri );
+            rsc.setURIHandler( uriHandler );
         }
-        // File not found.
-        return null;
+        // Else file not found.
+        return rsc;
     }
 
     /**
