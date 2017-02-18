@@ -1,7 +1,5 @@
 {
     "-type": "TopBottomView",
-    "layoutViews": {
-        "topView": "$topView",
-        "bottomView": "$bottomView"
-    }
+    "topView": "$topView",
+    "bottomView": "$bottomView"
 }
