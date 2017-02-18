@@ -386,6 +386,7 @@ public class ViewController extends FrameLayout implements MessageReceiver, Mess
     public void setTitle(String title) {
         this.title = title;
         titleBarState.setTitle( title );
+        titleBarState.apply();
     }
 
     public String getTitle() {
