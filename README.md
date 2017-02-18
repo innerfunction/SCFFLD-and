@@ -1,8 +1,19 @@
 # SCFFLD Android
-SCFFLD core functionality for Android
+JSON based dependency injection for Android.
 
-* Dependency injection (DI) containers;
+The core SCFFLD package provides the following:
+
+* JSON configuration loading;
+* Dependency injection (DI) / inversion of control (IoC) containers;
 * Internal URI system;
 * App container and basic UI components;
-* Utilities.
+
+See the wiki for more information.
+
+# Installation
+
+[TODO]
+
+# Sample app
+The project workspace includes a sample app that demonstrates core functionality and includes sample configurations and code.
 
