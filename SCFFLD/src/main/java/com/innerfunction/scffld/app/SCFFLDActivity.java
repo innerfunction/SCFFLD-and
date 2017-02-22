@@ -13,7 +13,9 @@
 // limitations under the License
 package com.innerfunction.scffld.app;
 
+import android.content.ActivityNotFoundException 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +35,8 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
 
     static final String Tag = SCFFLDActivity.class.getSimpleName();
 
+    /** A class for managing child activity results. */
+    private ActivityResultManager activityResultManager = new ActivityResultManager();
     /** A flag indicating whether the root view has been loaded. */
     private boolean rootViewLoaded = false;
     /**
@@ -125,6 +129,27 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         AppContainer.getAppContainer().clearCurrentActivity( this );
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent result) {
+        activityResultManager.onActivityResult( requestCode, resultCode, intent );
+    }
+
+    /**
+     * Launch a child activity and capture its response.
+     * @param intent    An intent to launch the child activity.
+     * @param callback  A handler for the activity result.
+     */
+    public void startActivityForResult(Intent intent, ActivityResultManager.Callback callback) {
+        try {
+            int requestCode = activityResultManager.registerCallback( callback );
+            startActivityForResult( intent, requestCode );
+        }
+        catch( ActivityNotFoundException e ) {
+            Log.e( Tag, "Starting child activity for result", e );
+            activityResultManager.deregisterCallback( callback );
+        }
     }
 
     public abstract void showView(T view);

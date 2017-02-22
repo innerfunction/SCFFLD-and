@@ -39,10 +39,6 @@ import java.util.Map;
  * Fragment lifecycle methods are provided with the same names, and the same or simplified
  * method signatures.
  *
- * TODO Add methods allowing nested controllers to control the title & nav bar buttons of the top
- * TODO -most controller; LayoutManager could be extended so that each nested view controller has
- * TODO a reference to its parent view controller.
- *
  * Attached by juliangoacher on 17/05/16.
  */
 public class ViewController extends FrameLayout implements MessageReceiver, MessageRouter {
