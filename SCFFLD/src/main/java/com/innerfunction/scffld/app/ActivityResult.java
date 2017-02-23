@@ -67,6 +67,12 @@ public class ActivityResult {
      * @return A request code value.
      */
     public int registerCallback(Callback callback) {
+        // Generate a request code from the callback object's identity.
+        // Note that this is possibly a complete over-engineering of the
+        // solution, as there is presumably only ever one pending callback
+        // per app, and possibly using a fixed value request code (e.g.
+        // '1') would work just as well; the answer ultimately depends on
+        // the purpose of the request code in the activity result design.
         int requestCode = System.identityHashCode( callback );
         pendingCallbacks.put( requestCode, callback );
         return requestCode;
