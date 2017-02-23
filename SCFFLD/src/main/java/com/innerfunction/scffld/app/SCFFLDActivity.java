@@ -36,7 +36,7 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
     static final String Tag = SCFFLDActivity.class.getSimpleName();
 
     /** A class for managing child activity results. */
-    private ActivityResultManager activityResultManager = new ActivityResultManager();
+    private ActivityResult activityResultManager = new ActivityResult.getManager();
     /** A flag indicating whether the root view has been loaded. */
     private boolean rootViewLoaded = false;
     /**
@@ -141,7 +141,7 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
      * @param intent    An intent to launch the child activity.
      * @param callback  A handler for the activity result.
      */
-    public void startActivityForResult(Intent intent, ActivityResultManager.Callback callback) {
+    public void startActivityForResult(Intent intent, ActivityResult.Callback callback) {
         try {
             int requestCode = activityResultManager.registerCallback( callback );
             startActivityForResult( intent, requestCode );

@@ -27,7 +27,10 @@ import java.util.Map;
  * request code to the callback when an activity result is received, and then
  * call a method on the callback interface appopriate for the result.
  */
-public class ActivityResultManager {
+public class ActivityResult {
+
+    /** The singleton instance of this class. */
+    static final ActivityResult Manager = new ActivityResult();
 
     /**
      * An interface to be implemented by activity result handlers.
@@ -35,11 +38,13 @@ public class ActivityResultManager {
     public static final interface Callback {
         /**
          * Handle a successful activity result.
+         * @param code      The result code; normally RESULT_OK unless custom codes are being used.
          * @param result    The result returned by the child activity.
          */
-        void onOk(Intent result);
+        void onOk(int code, Intent result);
         /**
          * Handle a cancelled child activity.
+         * Called when the activity result code is RESULT_CANCELED.
          */
         void onCancelled();
 
@@ -50,6 +55,8 @@ public class ActivityResultManager {
      * The map is keyed by request code.
      */
     private Map<Integer,Callback> pendingCallbacks = new HashMap<>();
+
+    private ActivityResult() {}
 
     /**
      * Register a callback.
@@ -78,16 +85,18 @@ public class ActivityResultManager {
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
         Callback callback = pendingCallbacks.remove( requestCode );
         if( callback != null ) {
-            switch( resultCode ) {
-            case Activity.RESULT_OK:
-                callback.onOk( result );
-                break;
-            case Activity.RESULT_CANCELED:
+            if( resultCode == Activity.RESULT_CANCELED ) {
                 callback.onCancelled();
-                break;
-            default:
-                // Extend here to support user-defined result codes.
+            }
+            else {
+                callback.onOk( resultCode, result );
+            }
         }
+    }
+
+    /** The the class instance. */
+    public ActivityResult getManager() {
+        return Manager;
     }
 
 }
