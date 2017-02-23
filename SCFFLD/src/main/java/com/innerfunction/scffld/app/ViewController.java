@@ -305,6 +305,20 @@ public class ViewController extends FrameLayout implements MessageReceiver, Mess
         return true;
     }
 
+    /**
+     * Launch a child activity and capture its response.
+     * @param intent    An intent to launch the child activity.
+     * @param callback  A handler for the activity result.
+     */
+    public void startActivityForResult(Intent intent, ActivityResult.Callback callback) {
+        if( activity instanceof SCFFLDActivity ) {
+            ((SCFFLDActivity)activity).startActivityForResult( intent, callback );
+        }
+        else {
+            Log.e( Tag, "ViewController activity is not an instance of SCFFLDActivity");
+        }
+    }
+
     public void postMessage(String message) {
         AppContainer.getAppContainer().postMessage( message, this );
     }
