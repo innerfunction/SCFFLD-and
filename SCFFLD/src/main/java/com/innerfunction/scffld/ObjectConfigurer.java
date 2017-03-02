@@ -589,7 +589,11 @@ public class ObjectConfigurer {
         }
         @Override
         public Object unwrapValue() {
-            return getList();
+            // The configurer will pad the list with null entries for missing
+            // or unconfigurable entries; the following method returns the
+            // underlying list with all null entries removed. This behaviour
+            // is consistent with the iOS implementation.
+            return getListWithNullEntriesRemoved();
         }
     }
 

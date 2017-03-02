@@ -46,6 +46,16 @@ public class ListBackedMap implements Map<String,Object> {
         return list;
     }
 
+    public List getListWithNullEntriesRemoved() {
+        List<Object> result = new ArrayList<>();
+        for( Object item : list ) {
+            if( item != Null ) {
+                result.add( item );
+            }
+        }
+        return result;
+    }
+
     @Override
     public void clear() {
         list.clear();
