@@ -15,6 +15,7 @@ package com.innerfunction.scffld.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.innerfunction.scffld.Container;
+import com.innerfunction.scffld.IOCContainerAware;
 import com.innerfunction.scffld.Message;
 import com.innerfunction.scffld.MessageReceiver;
 import com.innerfunction.scffld.MessageRouter;
@@ -41,7 +44,7 @@ import java.util.Map;
  *
  * Attached by juliangoacher on 17/05/16.
  */
-public class ViewController extends FrameLayout implements MessageReceiver, MessageRouter {
+public class ViewController extends FrameLayout implements MessageReceiver, MessageRouter, IOCContainerAware {
 
     static final String Tag = ViewController.class.getSimpleName();
 
@@ -77,6 +80,8 @@ public class ViewController extends FrameLayout implements MessageReceiver, Mess
     private int backgroundColor = Color.TRANSPARENT;
     /** A list of view behaviours. */
     private List<ViewControllerBehaviour> behaviours = new ArrayList<>();
+    /** The container that instantiated this view. */
+    private Container iocContainer;
 
     public ViewController(Context context) {
         super( context );
@@ -320,11 +325,19 @@ public class ViewController extends FrameLayout implements MessageReceiver, Mess
     }
 
     public void postMessage(String message) {
-        AppContainer.getAppContainer().postMessage( message, this );
+        AppContainer appContainer = AppContainer.findAppContainer( iocContainer );
+        if( appContainer != null ) {
+            appContainer.postMessage( message, this );
+        }
     }
 
     public void showToast(String message) {
         Toast.makeText( getActivity(), message, Toast.LENGTH_LONG ).show();
+    }
+
+    @Override
+    public void setIOCContainer(Container container) {
+        iocContainer = container;
     }
 
     @Override
