@@ -13,7 +13,7 @@
 // limitations under the License
 package com.innerfunction.scffld.app;
 
-import android.content.ActivityNotFoundException 
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,8 +22,6 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ViewFlipper;
 
 import com.innerfunction.scffld.R;
@@ -36,7 +34,7 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
     static final String Tag = SCFFLDActivity.class.getSimpleName();
 
     /** A class for managing child activity results. */
-    private ActivityResult activityResultManager = new ActivityResult.getManager();
+    private ActivityResult activityResultManager = ActivityResult.getManager();
     /** A flag indicating whether the root view has been loaded. */
     private boolean rootViewLoaded = false;
     /**
@@ -133,7 +131,7 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent result) {
-        activityResultManager.onActivityResult( requestCode, resultCode, intent );
+        activityResultManager.onActivityResult( requestCode, resultCode, result );
     }
 
     /**

@@ -11,31 +11,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9621ea34-4a6a-459d-aa87-75c3f485f36c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/animated_vector_drawable_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_annotations_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_compat_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_core_ui_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_core_utils_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_fragment_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_media_compat_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_25_2_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_vector_drawable_25_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/hamcrest_core_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/hamcrest_core_1_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/junit_4_12.xml" afterPath="$PROJECT_DIR$/.idea/libraries/junit_4_12.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_annotations_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_annotations_23_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_25_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_25_2_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_compat_25_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_compat_25_2_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_core_ui_25_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_core_ui_25_2_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_core_utils_25_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_core_utils_25_2_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_fragment_25_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_fragment_25_2_0.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_media_compat_25_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_media_compat_25_2_0.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCFFLD/atableview/atableview.iml" afterPath="$PROJECT_DIR$/SCFFLD/atableview/atableview.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCFFLD/build.gradle" afterPath="$PROJECT_DIR$/SCFFLD/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCFFLD/scffld.iml" afterPath="$PROJECT_DIR$/SCFFLD/scffld.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/ActivityResult.java" afterPath="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/ActivityResult.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDActivity.java" afterPath="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDApplication.java" afterPath="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDApplication.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" />
     </list>
     <ignored path="SCFFLD-and.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -83,77 +72,42 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="splashscreen.jpg" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/res/drawable/splashscreen.jpg">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SCFFLD/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="24" column="52" selection-start-line="24" selection-start-column="52" selection-end-line="24" selection-end-column="52" />
+            <state relative-caret-position="255">
+              <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gradle.properties" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.gradle/gradle.properties">
+      <file leaf-file-name="SCFFLDActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="221">
+              <caret line="135" column="0" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SCFFLDApplication.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDApplication.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="50" column="96" selection-start-line="50" selection-start-column="96" selection-end-line="50" selection-end-column="96" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gradle.properties" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gradle.properties">
+      <file leaf-file-name="ActivityResult.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/ActivityResult.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="settings.gradle" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/settings.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" column="52" selection-start-line="25" selection-start-column="52" selection-end-line="25" selection-end-column="52" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SCFFLD/atableview/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="736">
+              <caret line="103" column="18" selection-start-line="103" selection-start-column="18" selection-end-line="103" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -2944,7 +2898,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="7438757485000" />
+        <entry key="$PROJECT_DIR$" value="7439909202000" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -3387,7 +3341,6 @@
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/util/ValueMap.java" />
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/uri/Resource.java" />
         <option value="$PROJECT_DIR$/SCFFLD/src/main/res/layout/view_activity_layout.xml" />
-        <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDApplication.java" />
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/uri/DirectoryFileResource.java" />
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/uri/DirectoryResource.java" />
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/uri/FileBasedScheme.java" />
@@ -3406,7 +3359,6 @@
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/ui/table/TableViewCellFactory.java" />
         <option value="$PROJECT_DIR$/SCFFLD/src/main/res/layout/slide_view_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/assets/SCFFLD/types.json" />
         <option value="$PROJECT_DIR$/app/src/main/assets/SCFFLD/patterns/TopBottomLayoutView.json" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/top_bottom_layout.xml" />
@@ -3417,8 +3369,11 @@
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/AppContainer.java" />
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/ui/table/TableViewController.java" />
         <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/ViewController.java" />
-        <option value="$PROJECT_DIR$/SCFFLD/build.gradle" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/SCFFLD/build.gradle" />
+        <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/ActivityResult.java" />
+        <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDActivity.java" />
+        <option value="$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDApplication.java" />
       </list>
     </option>
   </component>
@@ -3687,7 +3642,7 @@
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="device.picker.selection" value="022AQQ7N37075722" />
   </component>
-  <component name="RunManager" selected="Android App.app">
+  <component name="RunManager" selected="Groovy.build (3)">
     <configuration default="false" name="build" type="GroovyScriptRunConfiguration" factoryName="Groovy" temporary="true">
       <module name="scffld" />
       <setting name="path" value="file://$PROJECT_DIR$/SCFFLD/build.gradle" />
@@ -3711,6 +3666,17 @@
       </method>
     </configuration>
     <configuration default="false" name="build (2)" type="GroovyScriptRunConfiguration" factoryName="Groovy" temporary="true">
+      <module name="scffld" />
+      <setting name="path" value="file://$PROJECT_DIR$/SCFFLD/build.gradle" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="file://$PROJECT_DIR$/SCFFLD" />
+      <setting name="debug" value="false" />
+      <method>
+        <option name="Make" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="false" name="build (3)" type="GroovyScriptRunConfiguration" factoryName="Groovy" temporary="true">
       <module name="scffld" />
       <setting name="path" value="file://$PROJECT_DIR$/SCFFLD/build.gradle" />
       <setting name="vmparams" value="" />
@@ -4004,17 +3970,19 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method />
     </configuration>
-    <list size="4">
+    <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Groovy.build" />
       <item index="1" class="java.lang.String" itemvalue="Groovy.build (1)" />
       <item index="2" class="java.lang.String" itemvalue="Groovy.build (2)" />
       <item index="3" class="java.lang.String" itemvalue="Android App.app" />
+      <item index="4" class="java.lang.String" itemvalue="Groovy.build (3)" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Groovy.build (2)" />
-        <item index="1" class="java.lang.String" itemvalue="Groovy.build (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Groovy.build" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="Groovy.build (3)" />
+        <item index="1" class="java.lang.String" itemvalue="Groovy.build (2)" />
+        <item index="2" class="java.lang.String" itemvalue="Groovy.build (1)" />
+        <item index="3" class="java.lang.String" itemvalue="Groovy.build" />
       </list>
     </recent_temporary>
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
@@ -4194,13 +4162,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-25/android.jar!/java/util/AbstractMap.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="148" column="0" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Android/sdk/sources/android-23/java/util/HashMap.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -4300,13 +4261,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="83" column="37" selection-start-line="83" selection-start-column="37" selection-end-line="83" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/TitleBar.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -4398,13 +4352,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="12" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/top_bottom_layout.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -4460,8 +4407,8 @@
         <state relative-caret-position="451">
           <caret line="583" column="31" selection-start-line="583" selection-start-column="31" selection-end-line="583" selection-end-column="31" />
           <folding>
-            <element signature="e#26247#26248#0" expanded="true" />
-            <element signature="e#26285#26286#0" expanded="true" />
+            <element signature="e#26247#26248#0" expanded="false" />
+            <element signature="e#26285#26286#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -4506,33 +4453,12 @@
         <state relative-caret-position="615">
           <caret line="370" column="14" selection-start-line="370" selection-start-column="14" selection-end-line="370" selection-end-column="14" />
           <folding>
-            <element signature="e#11221#11375#0" expanded="true" />
-            <element signature="e#11374#11375#0" expanded="true" />
-            <element signature="e#15222#15788#0" expanded="true" />
-            <element signature="e#15268#15297#0" expanded="true" />
-            <element signature="e#15787#15788#0" expanded="true" />
+            <element signature="e#11221#11375#0" expanded="false" />
+            <element signature="e#11374#11375#0" expanded="false" />
+            <element signature="e#15222#15788#0" expanded="false" />
+            <element signature="e#15268#15297#0" expanded="false" />
+            <element signature="e#15787#15788#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/res/drawable/splashscreen.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="52" selection-start-line="25" selection-start-column="52" selection-end-line="25" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -4544,18 +4470,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SCFFLD/build.gradle">
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="52" selection-start-line="24" selection-start-column="52" selection-end-line="24" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.gradle/gradle.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="15">
+          <caret line="1" column="30" selection-start-line="1" selection-start-column="30" selection-end-line="1" selection-end-column="30" />
           <folding />
         </state>
       </provider>
@@ -4568,10 +4486,65 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/settings.gradle">
+    <entry file="file://$USER_HOME$/.gradle/gradle.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/res/drawable/splashscreen.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="52" selection-start-line="25" selection-start-column="52" selection-end-line="25" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SCFFLD/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/ActivityResult.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="736">
+          <caret line="103" column="18" selection-start-line="103" selection-start-column="18" selection-end-line="103" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="135" column="0" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SCFFLD/src/main/java/com/innerfunction/scffld/app/SCFFLDApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="50" column="96" selection-start-line="50" selection-start-column="96" selection-end-line="50" selection-end-column="96" />
           <folding />
         </state>
       </provider>

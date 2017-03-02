@@ -35,7 +35,7 @@ public class ActivityResult {
     /**
      * An interface to be implemented by activity result handlers.
      */
-    public static final interface Callback {
+    public interface Callback {
         /**
          * Handle a successful activity result.
          * @param code      The result code; normally RESULT_OK unless custom codes are being used.
@@ -101,7 +101,7 @@ public class ActivityResult {
     }
 
     /** The the class instance. */
-    public ActivityResult getManager() {
+    public static ActivityResult getManager() {
         return Manager;
     }
 
