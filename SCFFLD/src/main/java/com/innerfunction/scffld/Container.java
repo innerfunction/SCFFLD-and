@@ -576,6 +576,14 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
         return running;
     }
 
+    /**
+     * Get the container's parent container.
+     * Returns null if the container doesn't have a parent.
+     */
+    public Container getParentContainer() {
+        return parentContainer;
+    }
+
     // Service interface
     @Override
     public void startService() {

@@ -112,13 +112,6 @@ public class AppContainer extends Container {
     private SCFFLDActivity currentActivity;
     /** A flag indicating a start failure. */
     private boolean startFailure;
-    /** The standard app container configuration. */
-    private Object standardConfiguration = m(
-        kv("types",     "@app:/SCFFLD/types.json"),
-        kv("schemes",   "@dirmap:/SCFFLD/schemes"),
-        kv("patterns",  "@dirmap:/SCFFLD/patterns"),
-        kv("nameds",    "@dirmap:/SCFFLD/nameds")
-    );
 
     public AppContainer(Context context) {
         super( context, StandardURIHandler.getInstance( context ) );
@@ -163,17 +156,6 @@ public class AppContainer extends Container {
 
     public int getAppBackgroundColor() {
         return appBackgroundColor;
-    }
-
-    public void setStandardConfiguration(Object config) {
-        this.standardConfiguration = config;
-    }
-
-    /**
-     * Load the app using the standard SCFFLD configuration.
-     */
-    public void loadStandardConfiguration() {
-        loadConfiguration( standardConfiguration );
     }
 
     /**
@@ -655,6 +637,21 @@ public class AppContainer extends Container {
         }
     }
 
+    /**
+     * Find the root app container in a container heirarchy.
+     * Checks the container argument, and then its parent and so on until the root
+     * app container is found. Returns null if no app container is found.
+     */
+    static AppContainer findAppContainer(Container container) {
+        while( container != null ) {
+            if( container instanceof AppContainer ) {
+                return (AppContainer)container;
+            }
+            container = container.getParentContainer();
+        }
+        return null;
+    }
+
     /** The app container's singleton instance. */
     static AppContainer Instance;
 
@@ -662,6 +659,12 @@ public class AppContainer extends Container {
         if( Instance == null ) {
             Instance = new AppContainer( context );
             Instance.addTypes( CoreTypes );
+            Instance.loadConfiguration( m(
+                kv("types",     "@app:/SCFFLD/types.json"),
+                kv("schemes",   "@dirmap:/SCFFLD/schemes"),
+                kv("patterns",  "@dirmap:/SCFFLD/patterns"),
+                kv("nameds",    "@dirmap:/SCFFLD/nameds")
+            ));
         }
         return Instance;
     }
@@ -669,7 +672,7 @@ public class AppContainer extends Container {
     public static AppContainer getAppContainer() {
         return Instance;
     }
-
+    
     static {
         // Register standard configuration proxies.
         // TODO: Is there a better place to put this code? Creates a two way dependency between scffld.app and scffld.ui.
