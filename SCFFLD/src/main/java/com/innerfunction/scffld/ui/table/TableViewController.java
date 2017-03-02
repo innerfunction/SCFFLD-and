@@ -181,10 +181,10 @@ public class TableViewController extends ViewController implements IOCContainerA
     }
 
     public void didSelectRowAtIndexPath(com.nakardo.atableview.view.ATableView tableView, NSIndexPath indexPath) {
-        Configuration rowData = tableData.getRowDataForIndexPath( indexPath );
-        String action = rowData.getValueAsString("action");
+        String action = actionForRowAtIndexPath( indexPath );
         if( action != null ) {
-            AppContainer.getAppContainer().postMessage( action, TableViewController.this );
+            AppContainer appContainer = AppContainer.findAppContainer( iocContainer );
+            appContainer.postMessage( action, TableViewController.this );
             tableData.clearFilter();
         }
     }
@@ -359,6 +359,16 @@ public class TableViewController extends ViewController implements IOCContainerA
      */
     public List formatData(List data) {
         return data;
+    }
+
+    /**
+     * Get the action for the row at the specified index path.
+     * Called when a table row is selected. Default implementation reads the "action"
+     * property of the row's data item.
+     */
+    public String actionForRowAtIndexPath(NSIndexPath indexPath) {
+        Configuration rowData = tableData.getRowDataForIndexPath( indexPath );
+        return rowData.getValueAsString("action");
     }
 
     public String displayModeForIndexPath(NSIndexPath indexPath) {

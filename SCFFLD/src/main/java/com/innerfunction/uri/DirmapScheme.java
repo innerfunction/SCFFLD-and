@@ -96,7 +96,7 @@ public class DirmapScheme implements URIScheme {
         private FileResource dirResource;
 
         protected Dirmap() {}
-        
+
         Dirmap(FileResource dirResource, Map<String,Object> staticResources) {
             this.dirResource = dirResource;
             // Copy all static resources into the directory map. Note that the actual file resources

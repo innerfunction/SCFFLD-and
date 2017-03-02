@@ -642,7 +642,7 @@ public class AppContainer extends Container {
      * Checks the container argument, and then its parent and so on until the root
      * app container is found. Returns null if no app container is found.
      */
-    static AppContainer findAppContainer(Container container) {
+    public static AppContainer findAppContainer(Container container) {
         while( container != null ) {
             if( container instanceof AppContainer ) {
                 return (AppContainer)container;
