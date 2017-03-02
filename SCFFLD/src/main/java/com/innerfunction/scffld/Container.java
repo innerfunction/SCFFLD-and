@@ -245,6 +245,9 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
         Object object = null;
         String className = configuration.getValueAsString("-and-class");
         if( className == null ) {
+            className = configuration.getValueAsString("-and:class");
+        }
+        if( className == null ) {
             className = configuration.getValueAsString("-class");
         }
         if( className == null ) {
