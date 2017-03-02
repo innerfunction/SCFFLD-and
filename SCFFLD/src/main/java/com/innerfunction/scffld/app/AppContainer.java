@@ -672,7 +672,7 @@ public class AppContainer extends Container {
     public static AppContainer getAppContainer() {
         return Instance;
     }
-    
+
     static {
         // Register standard configuration proxies.
         // TODO: Is there a better place to put this code? Creates a two way dependency between scffld.app and scffld.ui.

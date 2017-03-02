@@ -29,11 +29,12 @@ import com.innerfunction.scffld.Configuration;
  * The handler for the dirmap: URI scheme.
  * The scheme exists primarily as a way to map JSON files in a directory into
  * a configuration structure.
+ *
  */
 public class DirmapScheme implements URIScheme {
 
     /** Object constant representing a null (not found) directory map. */
-    static final Dirmap NullDirmap = new Dirmap( null );
+    static final Dirmap NullDirmap = new Dirmap();
 
     /** A cache of previously resolved dirmaps, keyed by directory path. */
     private LruCache<String, Dirmap> dirmapCache = new LruCache<>( 10 );
@@ -72,7 +73,7 @@ public class DirmapScheme implements URIScheme {
                 fileRsc = (FileResource)rsc;
             }
             if( fileRsc != null && fileRsc.isDirectory() ) {
-                dirmap = new Dirmap( (FileResource)rsc );
+                dirmap = new Dirmap( (FileResource)rsc, params );
                 dirmapCache.put( cacheKey, dirmap );
             }
             else {
@@ -84,15 +85,25 @@ public class DirmapScheme implements URIScheme {
     }
     
     /**
-     * A Map interface wrapper for a directory resource.
+     * A directory map.
+     * This object is used to map JSON files on the app: file system into the configuration space.
+     * Note that the URI scheme allows directory maps to be initialized with static resources
+     * which are specified as parameters to the dirmap: URI. This allows some of the directory
+     * map entries to be specified in the URI, rather than on the file system.
      */
     static final class Dirmap extends HashMap<String,Object> implements URIHandlerAware {
 
         private FileResource dirResource;
-        private Set<String> keySet;
 
-        Dirmap(FileResource dirResource) {
+        protected Dirmap() {}
+        
+        Dirmap(FileResource dirResource, Map<String,Object> staticResources) {
             this.dirResource = dirResource;
+            // Copy all static resources into the directory map. Note that the actual file resources
+            // are populated later, in the setURIHandler() method; this means that static resources
+            // can be overridden by providing a JSON file with the same key in the mapped directory.
+            // This behaviour is consistent with the iOS implementation.
+            putAll( staticResources );
         }
 
         @Override
