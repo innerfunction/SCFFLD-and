@@ -9,7 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nakardo.atableview.R;
+import com.innerfunction.scffld.R;
+
 import com.nakardo.atableview.internal.ATableViewCellAccessoryView;
 import com.nakardo.atableview.internal.ATableViewCellAccessoryView.ATableViewCellAccessoryType;
 

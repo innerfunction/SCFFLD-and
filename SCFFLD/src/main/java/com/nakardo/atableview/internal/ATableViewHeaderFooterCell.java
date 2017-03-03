@@ -4,7 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
-import com.nakardo.atableview.R;
+import com.innerfunction.scffld.R;
+
 import com.nakardo.atableview.uikit.UILabel;
 import com.nakardo.atableview.view.ATableView;
 import com.nakardo.atableview.view.ATableView.ATableViewStyle;

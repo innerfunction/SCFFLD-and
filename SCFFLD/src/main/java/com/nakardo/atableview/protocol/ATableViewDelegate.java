@@ -1,6 +1,7 @@
 package com.nakardo.atableview.protocol;
 
-import com.nakardo.atableview.R;
+import com.innerfunction.scffld.R;
+
 import com.nakardo.atableview.foundation.NSIndexPath;
 import com.nakardo.atableview.view.ATableView;
 import com.nakardo.atableview.view.ATableViewCell;
