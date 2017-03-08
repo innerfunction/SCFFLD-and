@@ -29,7 +29,7 @@ public class Resource implements URIHandlerAware {
     private static final String LogTag = Resource.class.getSimpleName();
 
     /** The resource's data data, i.e. the value referenced by the resource's URI. */
-    private Object data;
+    protected Object data;
     /** The URI used to reference the resource. */
     protected CompoundURI uri;
     /**
