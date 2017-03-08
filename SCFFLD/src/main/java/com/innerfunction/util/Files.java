@@ -13,6 +13,7 @@
 // limitations under the License
 package com.innerfunction.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -326,6 +327,18 @@ public class Files {
     public static Object readJSON(InputStream in, String name) {
         String json = readString( in, name );
         return json != null ? JSONValue.parse( json ) : null;
+    }
+
+    /**
+     * Write data from a byte array to a file.
+     * @param file      The file to write to.
+     * @param data      The data to write.
+     * @param append    If true then data is appended to the file; otherwise the file is
+     *                  overwritten.
+     * @return Returns true if the data was successfully written.
+     */
+    public static boolean writeData(File file, byte[] data, boolean append) {
+        return Files.writeData( file, new ByteArrayInputStream( data ), append );
     }
 
     /**
