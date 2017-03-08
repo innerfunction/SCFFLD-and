@@ -115,6 +115,7 @@ public class AppContainer extends Container {
 
     public AppContainer(Context context) {
         super( context, StandardURIHandler.getInstance( context ) );
+        addTypes( CoreTypes );
         setPriorityNames("types", "formats", "schemes", "aliases", "patterns");
     }
 
@@ -658,7 +659,6 @@ public class AppContainer extends Container {
     public static synchronized AppContainer getAppContainer(Context context) {
         if( Instance == null ) {
             Instance = new AppContainer( context );
-            Instance.addTypes( CoreTypes );
             Instance.loadConfiguration( m(
                 kv("types",     "@app:/SCFFLD/types.json"),
                 kv("schemes",   "@dirmap:/SCFFLD/schemes"),
