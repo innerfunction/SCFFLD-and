@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SCFFLD-and.iml" filepath="$PROJECT_DIR$/SCFFLD-and.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SCFFLD/atableview/atableview.iml" filepath="$PROJECT_DIR$/SCFFLD/atableview/atableview.iml" />
       <module fileurl="file://$PROJECT_DIR$/SCFFLD/scffld.iml" filepath="$PROJECT_DIR$/SCFFLD/scffld.iml" />
     </modules>
   </component>

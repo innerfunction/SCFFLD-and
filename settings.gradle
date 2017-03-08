@@ -1,2 +1,1 @@
-include ':app', ':scffld', ':atableview'
-project(':atableview').projectDir = new File('scffld/atableview')
+include ':app', ':scffld'

@@ -7,7 +7,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
-import com.nakardo.atableview.R;
+import com.innerfunction.scffld.R;
+
 import com.nakardo.atableview.view.ATableViewCell;
 
 // TODO this class should be generic, maybe we could change extension into a ViewGroup and place accessory within.

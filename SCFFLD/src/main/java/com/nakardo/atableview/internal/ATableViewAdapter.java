@@ -15,7 +15,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.nakardo.atableview.R;
+import com.innerfunction.scffld.R;
+
 import com.nakardo.atableview.foundation.NSIndexPath;
 import com.nakardo.atableview.internal.ATableViewCellAccessoryView.ATableViewCellAccessoryType;
 import com.nakardo.atableview.internal.ATableViewCellDrawable.ATableViewCellBackgroundStyle;
