@@ -69,12 +69,18 @@ public class Client {
     }
 
     /** Get an HTTP URL. */
-    public Q.Promise<Response> get(String url) throws MalformedURLException {
-        return get( url, null );
+    public Q.Promise<Response> get(String url) {
+        return get( url, null, null );
     }
 
     /** Get an HTTP URL, using the specified values as query parameters. */
-    public Q.Promise<Response> get(String url, Map<String,Object> params) throws MalformedURLException {
+    public Q.Promise<Response> get(String url, Map<String,Object> params) {
+        return get( url, params, null );
+    }
+
+
+    /** Get an HTTP URL, using the specified query parameters and request headers. */
+    public Q.Promise<Response> get(String url, Map<String,Object> params, Map<String,Object> headers) {
         if( params != null ) {
             String query = makeQueryString( params );
             // Does the URL already have a query string?
@@ -87,8 +93,14 @@ public class Client {
                 url = String.format("%s?%s", url, query );
             }
         }
-        Request request = new DataRequest( url, "GET");
-        return send( request );
+        try {
+            Request request = new DataRequest( url, "GET" );
+            request.setHeaders( headers );
+            return send( request );
+        }
+        catch(MalformedURLException e) {
+            return Q.reject( e );
+        }
     }
 
     /**
@@ -96,9 +108,14 @@ public class Client {
      * @param url       The URL to get.
      * @param dataFile  A file to write the URL's contents to.
      */
-    public Q.Promise<Response> getFile(String url, File dataFile) throws MalformedURLException {
-        Request request = new FileRequest( url, "GET", dataFile );
-        return send( request );
+    public Q.Promise<Response> getFile(String url, File dataFile) {
+        try {
+            Request request = new FileRequest( url, "GET", dataFile );
+            return send( request );
+        }
+        catch(MalformedURLException e) {
+            return Q.reject( e );
+        }
     }
 
     /**
@@ -107,9 +124,9 @@ public class Client {
      * Response.getDataFile(). The file should be moved to suitable location if it needs to
      * be kept. (Note that the file object returned has a modified renameTo() method that can
      * properly handle moving files between separate disk partitions).
-     * @param url       The URL to get.
+     * @param url The URL to get.
      */
-    public Q.Promise<Response> getFile(String url) throws MalformedURLException {
+    public Q.Promise<Response> getFile(String url) {
         String filename = String.format("%s_%d.tmp", getClass().getName(), System.currentTimeMillis() );
         File dataFile = new File( cacheDir, filename ) {
             @Override
@@ -122,8 +139,13 @@ public class Client {
                 super.finalize();
             }
         };
-        Request request = new FileRequest( url, "GET", dataFile );
-        return send( request );
+        try {
+            Request request = new FileRequest( url, "GET", dataFile );
+            return send( request );
+        }
+        catch(MalformedURLException e) {
+            return Q.reject( e );
+        }
     }
 
     /**
@@ -134,16 +156,21 @@ public class Client {
      * @return
      * @throws MalformedURLException
      */
-    public Q.Promise<Response> post(String url, Map<String,Object> data) throws MalformedURLException {
-        Request request = new DataRequest( url, "POST");
-        request.setBody( makeQueryString( data ) );
-        request.setHeaders( m(
-            kv("Content-Type", "application/x-www-form-urlencoded"),
-            // The following is necessary because the string version of setBody is used above,
-            // which converts the body string to a byte array using the platform default encoding.
-            kv("charset", Charset.defaultCharset().name() )
-        ));
-        return send( request );
+    public Q.Promise<Response> post(String url, Map<String,Object> data) {
+        try {
+            Request request = new DataRequest( url, "POST" );
+            request.setBody( makeQueryString( data ) );
+            request.setHeaders( m(
+                kv( "Content-Type", "application/x-www-form-urlencoded" ),
+                // The following is necessary because the string version of setBody is used above,
+                // which converts the body string to a byte array using the platform default encoding.
+                kv( "charset", Charset.defaultCharset().name() )
+            ) );
+            return send( request );
+        }
+        catch(MalformedURLException e) {
+            return Q.reject( e );
+        }
     }
 
     /**
@@ -154,7 +181,7 @@ public class Client {
      * @return
      * @throws MalformedURLException
      */
-    public Q.Promise<Response> submit(String method, String url, Map<String,Object> data) throws MalformedURLException {
+    public Q.Promise<Response> submit(String method, String url, Map<String,Object> data) {
         return "POST".equals( method ) ? post( url, data ) : get( url, data );
     }
 
