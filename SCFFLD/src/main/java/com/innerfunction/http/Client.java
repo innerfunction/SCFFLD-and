@@ -81,18 +81,7 @@ public class Client {
 
     /** Get an HTTP URL, using the specified query parameters and request headers. */
     public Q.Promise<Response> get(String url, Map<String,Object> params, Map<String,Object> headers) {
-        if( params != null ) {
-            String query = makeQueryString( params );
-            // Does the URL already have a query string?
-            if( url.indexOf('?') > -1 ) {
-                // Append additional parameters to end of query string.
-                url = String.format("%s&%s", url, query );
-            }
-            else {
-                // Append parameters as new query string.
-                url = String.format("%s?%s", url, query );
-            }
-        }
+        url = appendURLQueryString( url, params );
         try {
             Request request = new DataRequest( url, "GET" );
             request.setHeaders( headers );
@@ -109,6 +98,17 @@ public class Client {
      * @param dataFile  A file to write the URL's contents to.
      */
     public Q.Promise<Response> getFile(String url, File dataFile) {
+        return getFile( url, null, dataFile );
+    }
+
+    /**
+     * Get a file from an HTTP URL.
+     * @param url       The URL to get.
+     * @param params    Optional request query parameters.
+     * @param dataFile  A file to write the URL's contents to.
+     */
+    public Q.Promise<Response> getFile(String url, Map<String, Object> params, File dataFile) {
+        url = appendURLQueryString( url, params );
         try {
             Request request = new FileRequest( url, "GET", dataFile );
             return send( request );
@@ -120,13 +120,23 @@ public class Client {
 
     /**
      * Get a file from an HTTP URL.
+     * @param url       The URL to get.
+     */
+    public Q.Promise<Response> getFile(String url) {
+        return getFile( url, (Map<String, Object>)null );
+    }
+
+    /**
+     * Get a file from an HTTP URL.
      * Writes the response to a temporary file. The file can be retrieved through a call to
      * Response.getDataFile(). The file should be moved to suitable location if it needs to
      * be kept. (Note that the file object returned has a modified renameTo() method that can
      * properly handle moving files between separate disk partitions).
-     * @param url The URL to get.
+     * @param url       The URL to get.
+     * @param params    Optional query parameters.
      */
-    public Q.Promise<Response> getFile(String url) {
+    public Q.Promise<Response> getFile(String url, Map<String, Object> params) {
+        url = appendURLQueryString( url, params );
         String filename = String.format("%s_%d.tmp", getClass().getName(), System.currentTimeMillis() );
         File dataFile = new File( cacheDir, filename ) {
             @Override
@@ -257,6 +267,33 @@ public class Client {
             promise.reject("Failed to dispatch to request queue");
         }
         return promise;
+    }
+
+    /**
+     * Append query parameters to the end of a URL.
+     * @param url       A URL string; may already contain query parameters, in which case those
+     *                  parameters are preserved and any additional parameters are appended to the
+     *                  end.
+     * @param params    A map of parameters; may be null.
+     * @return The URL string with any query parameters appended, or the 'url' argument unchanged
+     * if no parameters are specified.
+     */
+    private String appendURLQueryString(String url, Map<String,Object> params) {
+        if( params != null ) {
+            String query = makeQueryString( params );
+            if( query.length() >0 ) {
+                // Does the URL already have a query string?
+                if( url.indexOf( '?' ) > -1 ) {
+                    // Append additional parameters to end of query string.
+                    url = String.format( "%s&%s", url, query );
+                }
+                else {
+                    // Append parameters as new query string.
+                    url = String.format( "%s?%s", url, query );
+                }
+            }
+        }
+        return url;
     }
 
     /** Make a HTTP query string using the values in the specified map. */
