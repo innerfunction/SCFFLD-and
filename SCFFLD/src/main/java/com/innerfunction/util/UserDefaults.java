@@ -85,4 +85,11 @@ public class UserDefaults {
         editor.commit();
     }
 
+    public void remove(String... keys) {
+        SharedPreferences.Editor editor = preferences.edit();
+        for( String key : keys ) {
+            editor.remove( key );
+        }
+        editor.commit();
+    }
 }
