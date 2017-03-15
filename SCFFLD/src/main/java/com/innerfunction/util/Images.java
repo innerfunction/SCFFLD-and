@@ -62,25 +62,20 @@ public class Images {
         }
         else if( "http".equals( scheme ) || "https".equals( scheme ) ) {
             Client httpClient = new Client( context );
-            try {
-                return httpClient.get( url )
-                    .then( new Q.Promise.Callback<Response, Drawable>() {
-                        @Override
-                        public Drawable result(Response response) {
-                            Drawable drawable = null;
-                            String contentType = response.getContentType();
-                            if( contentType != null && contentType.startsWith("image/") ) {
-                                byte[] data = response.getRawBody();
-                                Bitmap bitmap = BitmapFactory.decodeByteArray( data, 0, data.length );
-                                drawable = new BitmapDrawable( Resources.getSystem(), bitmap );
-                            }
-                            return drawable;
+            return httpClient.get( url )
+                .then( new Q.Promise.Callback<Response, Drawable>() {
+                    @Override
+                    public Drawable result(Response response) {
+                        Drawable drawable = null;
+                        String contentType = response.getContentType();
+                        if( contentType != null && contentType.startsWith("image/") ) {
+                            byte[] data = response.getRawBody();
+                            Bitmap bitmap = BitmapFactory.decodeByteArray( data, 0, data.length );
+                            drawable = new BitmapDrawable( Resources.getSystem(), bitmap );
                         }
-                    } );
-            }
-            catch(MalformedURLException e) {
-                Q.reject( e );
-            }
+                        return drawable;
+                    }
+                } );
         }
         return Q.reject( String.format("Unsupported URL scheme: %s", scheme ) );
     }
