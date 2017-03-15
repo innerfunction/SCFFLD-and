@@ -192,6 +192,11 @@ public class WebViewController extends ViewController {
         loadingSpinner.setVisibility( View.INVISIBLE );
     }
 
+    /**
+     * Method called once the web view has finished loading.
+     */
+    public void onWebViewLoaded() {}
+
     private void loadContent() {
         if( !contentLoaded ) {
             // Specified content takes precedence over a contentURL property. Note that contentURL
@@ -367,6 +372,7 @@ public class WebViewController extends ViewController {
             if( useHTMLTitle ) {
                 setTitle( view.getTitle() );
             }
+            onWebViewLoaded();
         }
     }
 
