@@ -596,6 +596,9 @@ public class AppContainer extends Container {
         else if( view instanceof Intent ) {
             androidContext.startActivity( (Intent)view );
         }
+        else if( view == null ) {
+            Log.w(Tag, "Can't show null view");
+        }
         else {
             Log.w(Tag, String.format("Unable to display view of type %s", view.getClass() ) );
         }
