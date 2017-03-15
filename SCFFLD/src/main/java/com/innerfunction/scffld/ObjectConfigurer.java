@@ -241,7 +241,10 @@ public class ObjectConfigurer {
                         // Note that by this point, lists are presented as maps (see the
                         // ListIOCProxy class below).
                         Class<?> memberType = null;
-                        if( value instanceof Map ) {
+                        if( value instanceof ListIOCProxy ) {
+                            memberType = properties.getListPropertyValueTypeParameter( propName );
+                        }
+                        else if( value instanceof Map ) {
                             memberType = properties.getMapPropertyValueTypeParameter( propName );
                         }
                         // Recursively configure the value.
@@ -440,6 +443,8 @@ public class ObjectConfigurer {
         Class<?> getPropertyType(String name);
         /** Get the generic type information for a map value. */
         Class<?> getMapPropertyValueTypeParameter(String name);
+        /** Get the generic type information for a list value. */
+        Class<?> getListPropertyValueTypeParameter(String name);
         /** Get a named property value. */
         T getPropertyValue(String name);
         /** Set a named property value. */
@@ -475,6 +480,17 @@ public class ObjectConfigurer {
                 Type[] typeInfo = property.getGenericParameterTypeInfo();
                 if( typeInfo.length > 1 && typeInfo[1] instanceof Class ) {
                     return (Class<?>)typeInfo[1];
+                }
+            }
+            return Object.class;
+        }
+        @Override
+        public Class<?> getListPropertyValueTypeParameter(String name) {
+            Property property = properties.get( name );
+            if( property != null ) {
+                Type[] typeInfo = property.getGenericParameterTypeInfo();
+                if( typeInfo.length > 0 && typeInfo[0] instanceof Class ) {
+                    return (Class<?>)typeInfo[0];
                 }
             }
             return Object.class;
@@ -523,6 +539,10 @@ public class ObjectConfigurer {
         }
         @Override
         public Class<?> getMapPropertyValueTypeParameter(String name) {
+            return Object.class;
+        }
+        @Override
+        public Class<?> getListPropertyValueTypeParameter(String name) {
             return Object.class;
         }
         @Override
