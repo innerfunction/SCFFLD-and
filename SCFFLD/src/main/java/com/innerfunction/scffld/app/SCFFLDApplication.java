@@ -19,6 +19,8 @@ import android.os.Build;
 import android.util.Log;
 import android.webkit.WebView;
 
+import static com.innerfunction.util.DataLiterals.*;
+
 /**
  * Standard SCFFLD application class.
  *
@@ -48,7 +50,13 @@ public class SCFFLDApplication extends Application {
                 android.os.Debug.startMethodTracing("scffld-trace");
             }
             // Configure and start the app container.
-            AppContainer appContainer = AppContainer.getAppContainer( getApplicationContext() );
+            Object configuration = m(
+                kv("types",     "@app:/SCFFLD/types.json"),
+                kv("schemes",   "@dirmap:/SCFFLD/schemes"),
+                kv("patterns",  "@dirmap:/SCFFLD/patterns"),
+                kv("nameds",    "@dirmap:/SCFFLD/nameds")
+            );
+            AppContainer appContainer = AppContainer.initialize( getApplicationContext(), configuration );
             if( TraceEnabled ) {
                 android.os.Debug.stopMethodTracing();
             }

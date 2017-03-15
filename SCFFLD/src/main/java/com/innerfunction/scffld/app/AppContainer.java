@@ -52,7 +52,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * An IOC container encapsulating an app's UI and functionality.
@@ -659,20 +658,20 @@ public class AppContainer extends Container {
     /** The app container's singleton instance. */
     static AppContainer Instance;
 
-    public static synchronized AppContainer getAppContainer(Context context) {
-        if( Instance == null ) {
-            Instance = new AppContainer( context );
-            Instance.loadConfiguration( m(
-                kv("types",     "@app:/SCFFLD/types.json"),
-                kv("schemes",   "@dirmap:/SCFFLD/schemes"),
-                kv("patterns",  "@dirmap:/SCFFLD/patterns"),
-                kv("nameds",    "@dirmap:/SCFFLD/nameds")
-            ));
-        }
+    protected static AppContainer initialize(AppContainer instance, Object configuration) {
+        instance.loadConfiguration( configuration );
+        Instance = instance;
         return Instance;
     }
 
+    public static AppContainer initialize(Context context, Object configuration) {
+        return initialize( new AppContainer( context ), configuration );
+    }
+
     public static AppContainer getAppContainer() {
+        if( Instance == null ) {
+            throw new IllegalStateException("App container not initialized");
+        }
         return Instance;
     }
 
