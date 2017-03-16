@@ -531,18 +531,20 @@ public class Container implements ConfigurationData, Service, MessageReceiver, M
         if( object instanceof Container ) {
             ((Container)object).parentContainer = this;
         }
-        // If instance is a service then add to list of services.
-        if( object instanceof Service ) {
-            services.add( (Service)object );
-        }
     }
 
     /** Perform standard post-configuration operations on a new object instance. */
     public void doPostConfiguration(Object object) {
-        // If running and the object is a service instance then start the service now that it is
-        // fully configured.
-        if( running && object instanceof Service ) {
-            ((Service)object).startService();
+        if( object instanceof Service ) {
+            Service service = (Service)object;
+            if( running ) {
+                // If container is running then start the service.
+                service.startService();
+            }
+            else {
+                // Add to list of services to be started later.
+                services.add( service );
+            }
         }
     }
 
