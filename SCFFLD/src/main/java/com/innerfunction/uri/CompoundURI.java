@@ -76,7 +76,7 @@ public class CompoundURI {
      * @throws URISyntaxException If the string isn't a valid URI.
      */
     private CompoundURI(String input) throws URISyntaxException {
-        ASTNode ast = new ASTNode();
+        ASTNode ast = new ASTNode( input );
         ast.__input = input;
         if( parseCompoundURI( input, ast ) ) {
             String trailing = ast.__trailing;
@@ -286,10 +286,12 @@ public class CompoundURI {
         String param_name;
         List<ASTNode> parameters;
         String format;
+        ASTNode(String input) {
+            this.__input = input;
+        }
         /** Make a child of the current node. */
         ASTNode makeChildNode() {
-            ASTNode child = new ASTNode();
-            child.__input = this.__input;
+            ASTNode child = new ASTNode( this.__input );
             return child;
         }
         /** Record an error message at the specified input. */
@@ -360,11 +362,11 @@ public class CompoundURI {
                     }
                 }
                 ast.parameters = new ArrayList<>();
-                ASTNode param_ast = new ASTNode();
+                ASTNode param_ast = new ASTNode( ast.__input );
                 while( parseParameters( input, param_ast ) ) {
                     ast.parameters.add( param_ast );
                     input = param_ast.__trailing;
-                    param_ast = new ASTNode();
+                    param_ast = new ASTNode( ast.__input );
                 }
                 if( parseFormat( input, ast ) ) {
                     input = ast.__trailing;
@@ -452,9 +454,9 @@ public class CompoundURI {
         return false;
     }
 
-    // Match an optional * prefix followed by any word characters or -
+    // Match an optional * prefix followed by any word characters or . or -
     private boolean parseParamName(String input, ASTNode ast) {
-        String[] groups = Regex.matches("^(\\*?[\\w-]+)(.*)$", input );
+        String[] groups = Regex.matches("^(\\*?[\\w.-]+)(.*)$", input );
         if( groups != null && groups.length > 2 ) {
             ast.param_name = groups[1];
             ast.__trailing = groups[2];
