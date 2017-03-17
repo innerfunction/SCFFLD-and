@@ -304,7 +304,10 @@ public class Client {
         String[] pairs = new String[params.size()];
         int i = 0;
         for( String key : params.keySet() ) {
-            pairs[i++] = (Uri.encode( key ) + '=' + Uri.encode( params.get( key ).toString() ) );
+            Object value = params.get( key );
+            if( value != null ) {
+                pairs[i++] = (Uri.encode( key ) + '=' + Uri.encode( value.toString() ));
+            }
         }
         return TextUtils.join("&", pairs );
     }
