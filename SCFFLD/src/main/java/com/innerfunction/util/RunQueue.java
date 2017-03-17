@@ -19,6 +19,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A queue for running tasks on a background thread.
+ * A queue must be started before tasks are processed. Normally, the queue is automatically started
+ * when created using the the standard constructor; however, queues can also be created in a
+ * non-started state, and these queues must be manually started by a call to start() before tasks
+ * will be processed.
+ *
  * Attached by juliangoacher on 07/05/16.
  */
 public class RunQueue extends LinkedBlockingQueue<Runnable> {
@@ -28,7 +33,22 @@ public class RunQueue extends LinkedBlockingQueue<Runnable> {
     private Thread runThread;
     private String name;
 
+    /**
+     * Create a new queue with the specified name.
+     * Creates a started queue which will automatically start processing any tasks added to it.
+     * @param name
+     */
     public RunQueue(String name) {
+        this( name, true );
+    }
+
+    /**
+     * Create a new queue with the specified name.
+     * @param name
+     * @param start If true then the queue is started automatically; otherwise the queue needs to
+     *              be manually started with a call to start() before added tasks will be processed.
+     */
+    public RunQueue(String name, boolean start) {
         this.name = String.format("RQ:%s", name );
         runThread = new Thread(new Runnable() {
             public void run() {
@@ -43,9 +63,19 @@ public class RunQueue extends LinkedBlockingQueue<Runnable> {
                 }
             }
         }, this.name );
-        runThread.start();
+        if( start ) {
+            runThread.start();
+        }
     }
 
+    /**
+     * Start the queue if not already started.
+     */
+    public void start() {
+        if( !runThread.isAlive() ) {
+            runThread.start();
+        }
+    }
     public boolean dispatch(Runnable runnable) {
         boolean ok = true;
         try {
