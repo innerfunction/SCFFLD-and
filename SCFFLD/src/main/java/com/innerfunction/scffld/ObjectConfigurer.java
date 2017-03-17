@@ -225,7 +225,7 @@ public class ObjectConfigurer {
                         // information, and then try to instantiate that type as the new value.
                         // (Note that the container method will return a configuration proxy for
                         // those classes which require one.)
-                        String className = propType.getCanonicalName();
+                        String className = propType.getName();
                         try {
                             value = container.newInstanceForClassNameAndConfiguration( className, valueConfig );
                         }
