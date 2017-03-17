@@ -30,6 +30,14 @@ public class RunQueue extends LinkedBlockingQueue<Runnable> {
 
     static final String Tag = RunQueue.class.getSimpleName();
 
+    /** An enumeration of queue starting modes. */
+    public enum StartMode {
+        /** Start mode auto: The queue is automatically started when created. */
+        Auto,
+        /** Start mode manual: The queue must be explicitly started after creation. */
+        Manual
+    };
+
     private Thread runThread;
     private String name;
 
@@ -39,16 +47,15 @@ public class RunQueue extends LinkedBlockingQueue<Runnable> {
      * @param name
      */
     public RunQueue(String name) {
-        this( name, true );
+        this( name, StartMode.Auto );
     }
 
     /**
-     * Create a new queue with the specified name.
-     * @param name
-     * @param start If true then the queue is started automatically; otherwise the queue needs to
-     *              be manually started with a call to start() before added tasks will be processed.
+     * Create a new queue with the specified name and start mode.
+     * @param name      A name for the queue thread.
+     * @param startMode Whether the queue is started when created, or must be manually started after.
      */
-    public RunQueue(String name, boolean start) {
+    public RunQueue(String name, StartMode startMode) {
         this.name = String.format("RQ:%s", name );
         runThread = new Thread(new Runnable() {
             public void run() {
@@ -63,7 +70,7 @@ public class RunQueue extends LinkedBlockingQueue<Runnable> {
                 }
             }
         }, this.name );
-        if( start ) {
+        if( startMode == StartMode.Auto ) {
             runThread.start();
         }
     }
