@@ -17,10 +17,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.innerfunction.q.Q;
-import com.innerfunction.util.Files;
 import com.innerfunction.util.RunQueue;
 
 import static com.innerfunction.util.DataLiterals.*;
@@ -301,14 +299,20 @@ public class Client {
         if( params == null ) {
             return "";
         }
-        String[] pairs = new String[params.size()];
+        StringBuilder sb = new StringBuilder();
         int i = 0;
         for( String key : params.keySet() ) {
             Object value = params.get( key );
             if( value != null ) {
-                pairs[i++] = (Uri.encode( key ) + '=' + Uri.encode( value.toString() ));
+                if( i > 0 ) {
+                    sb.append('&');
+                    sb.append( Uri.encode( key ) );
+                    sb.append('=');
+                    sb.append( Uri.encode( value.toString() ) );
+                }
+                i++;
             }
         }
-        return TextUtils.join("&", pairs );
+        return sb.toString();
     }
 }
