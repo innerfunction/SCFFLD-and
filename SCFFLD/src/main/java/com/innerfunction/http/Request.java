@@ -81,6 +81,11 @@ public abstract class Request {
         this.headers = headers;
     }
 
+    /** Add a header to the request. */
+    public void setHeader(String name, Object value) {
+        headers.put( name, value );
+    }
+
     /** Connect to the server and send the request data. */
     Response connect(Client client) throws IOException {
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();

@@ -50,6 +50,13 @@ public class Client {
         CookieHandler.setDefault( CookieManager );
     }
 
+    /**
+     * The global authentication delegate.
+     * This member is part of a pattern which allows a default, global authentication delegate
+     * to be set for all HTTP client instances, whilst still alternative delegates to be specified
+     * for individual clients.
+     */
+    private static AuthenticationDelegate GlobalAuthenticationDelegate = null;
     /** A delegate object used to perform HTTP authentication, when required. */
     private AuthenticationDelegate authenticationDelegate;
     /** An object for checking network connectivity. */
@@ -60,6 +67,28 @@ public class Client {
     public Client(Context context) {
         this.connectivityManager = (ConnectivityManager)context.getSystemService( Context.CONNECTIVITY_SERVICE );
         this.cacheDir = context.getCacheDir();
+        // The default authentication delegate. This instance will in turn delegate calls to the
+        // global delegate, if any; otherwise, it implements default functionality which returns
+        // an error in response to any authentication challange.
+        this.authenticationDelegate = new AuthenticationDelegate() {
+            @Override
+            public boolean isAuthenticationChallenge(Client client, Request request, Response response) {
+                if( GlobalAuthenticationDelegate != null ) {
+                    return GlobalAuthenticationDelegate.isAuthenticationChallenge( client, request, response );
+                }
+                // Standard HTTP behaviour - 401 indicates authentication challenge.
+                return response.getStatusCode() == 401;
+            }
+
+            @Override
+            public Q.Promise<Response> authenticate(Client client, Request request, Response response) {
+                if( GlobalAuthenticationDelegate != null ) {
+                    return GlobalAuthenticationDelegate.authenticate( client, request, response );
+                }
+                // No authentication delegate available, return error.
+                return Q.reject("No HTTP authentication delegate available");
+            }
+        };
     }
 
     public void setAuthenticationDelegate(AuthenticationDelegate delegate) {
@@ -193,18 +222,18 @@ public class Client {
         return "POST".equals( method ) ? post( url, data ) : get( url, data );
     }
 
-    /** Test whether a response represents an authentication error. */
-    private boolean isAuthenticationErrorResponse(Response response) {
+    /** Test whether a response represents an authentication challenge. */
+    private boolean isAuthenticationChallenge(Request request, Response response) {
         if( authenticationDelegate != null ) {
-            return authenticationDelegate.isAuthenticationErrorResponse( this, response );
+            return authenticationDelegate.isAuthenticationChallenge( this, request, response );
         }
         return false;
     }
 
     /** Perform HTTP authentication. */
-    private Q.Promise<Response> authenticate() {
+    private Q.Promise<Response> authenticate(Request request, Response response) {
         if( authenticationDelegate != null ) {
-            return authenticationDelegate.authenticateUsingHTTPClient( this );
+            return authenticationDelegate.authenticate( this, request, response );
         }
         return Q.reject("Authentication delegate not available");
     }
@@ -233,9 +262,9 @@ public class Client {
                     // background thread).
                     Response response = request.connect( Client.this );
                     // Check for authentication failures.
-                    if( isAuthenticationErrorResponse( response ) ) {
+                    if( isAuthenticationChallenge( request, response ) ) {
                         // Try to authenticate and then resubmit the original request.
-                        authenticate()
+                        authenticate( request, response )
                             .then(new Q.Promise.Callback<Response, Void>() {
                                 @Override
                                 public Void result(Response response) {
@@ -292,6 +321,11 @@ public class Client {
             }
         }
         return url;
+    }
+
+    /** Set the default, global authentication delegate. */
+    public static final void setGlobalAuthenticationDelegate(AuthenticationDelegate delegate) {
+        GlobalAuthenticationDelegate = delegate;
     }
 
     /** Make a HTTP query string using the values in the specified map. */

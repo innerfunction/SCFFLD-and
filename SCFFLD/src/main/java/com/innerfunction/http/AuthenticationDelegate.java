@@ -22,13 +22,26 @@ import com.innerfunction.q.Q;
  */
 public interface AuthenticationDelegate {
 
-    /** Test whether a response represents an authentication error. */
-    boolean isAuthenticationErrorResponse(Client client, Response response);
+    /**
+     * Test whether a response represents an authentication challenge.
+     *
+     * @param client    The HTTP client being used.
+     * @param request   The request submitted to the server.
+     * @param response  The response returned by the server.
+     */
+    boolean isAuthenticationChallenge(Client client, Request request, Response response);
 
     /**
      * Perform an authentication.
-     * TODO: A more complete API design would provide info on the domain/realm that authentication is required for.
+     * This method should submit appropriate authentication credentials to the server before
+     * continuing. This may be done by modifying the current request (e.g. by appending an
+     * authentication header), or by submitting a new request.
+     *
+     * @param client    The HTTP client being used.
+     * @param request   The request submitted to the server. The same request will be resubmitted
+     *                  after authentication.
+     * @param response  The response returned by the server.
      */
-    Q.Promise<Response> authenticateUsingHTTPClient(Client client);
+    Q.Promise<Response> authenticate(Client client, Request request, Response response);
 
 }
