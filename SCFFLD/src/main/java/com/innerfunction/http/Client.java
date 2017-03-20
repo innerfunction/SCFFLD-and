@@ -72,6 +72,12 @@ public class Client {
         // an error in response to any authentication challange.
         this.authenticationDelegate = new AuthenticationDelegate() {
             @Override
+            public void prepareRequest(Client client, Request request) {
+                if( GlobalAuthenticationDelegate != null ) {
+                    GlobalAuthenticationDelegate.prepareRequest( client, request );
+                }
+            }
+            @Override
             public boolean isAuthenticationChallenge(Client client, Request request, Response response) {
                 if( GlobalAuthenticationDelegate != null ) {
                     return GlobalAuthenticationDelegate.isAuthenticationChallenge( client, request, response );
@@ -81,7 +87,7 @@ public class Client {
             }
 
             @Override
-            public Q.Promise<Response> authenticate(Client client, Request request, Response response) {
+            public Q.Promise<Request> authenticate(Client client, Request request, Response response) {
                 if( GlobalAuthenticationDelegate != null ) {
                     return GlobalAuthenticationDelegate.authenticate( client, request, response );
                 }
@@ -222,6 +228,13 @@ public class Client {
         return "POST".equals( method ) ? post( url, data ) : get( url, data );
     }
 
+    /** Prepare a request before sending to the server. */
+    private void prepareRequest(Request request) {
+        if( authenticationDelegate != null ) {
+            authenticationDelegate.prepareRequest( this, request );
+        }
+    }
+
     /** Test whether a response represents an authentication challenge. */
     private boolean isAuthenticationChallenge(Request request, Response response) {
         if( authenticationDelegate != null ) {
@@ -231,7 +244,7 @@ public class Client {
     }
 
     /** Perform HTTP authentication. */
-    private Q.Promise<Response> authenticate(Request request, Response response) {
+    private Q.Promise<Request> authenticate(Request request, Response response) {
         if( authenticationDelegate != null ) {
             return authenticationDelegate.authenticate( this, request, response );
         }
@@ -257,17 +270,18 @@ public class Client {
                         // TODO Add client configuration options to control which networks can be used.
                         throw new IOException("Network not available");
                     }
-                    // Connectivity OK, try submitting the request. (Note that this method call
-                    // blocks until the request completes, but that's ok because we are on a
-                    // background thread).
+                    // Connectivity OK, prepare the request before sending.
+                    prepareRequest( request );
+                    // Next, try submitting the request. (Note that this method call blocks until
+                    // the request completes, but that's ok because we are on a background thread).
                     Response response = request.connect( Client.this );
-                    // Check for authentication failures.
+                    // Check for authentication challenges.
                     if( isAuthenticationChallenge( request, response ) ) {
                         // Try to authenticate and then resubmit the original request.
                         authenticate( request, response )
-                            .then(new Q.Promise.Callback<Response, Void>() {
+                            .then(new Q.Promise.Callback<Request, Void>() {
                                 @Override
-                                public Void result(Response response) {
+                                public Void result(Request request) {
                                     // Retry the original request.
                                     promise.resolve( send( request ) );
                                     return null;

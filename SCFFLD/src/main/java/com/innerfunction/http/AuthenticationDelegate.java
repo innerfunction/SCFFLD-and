@@ -23,10 +23,20 @@ import com.innerfunction.q.Q;
 public interface AuthenticationDelegate {
 
     /**
+     * Prepare a request before it is sent to the server.
+     * This method can be used e.g. to perform pre-emptive authentication by adding an
+     * authorization header before a challenge is received.
+     *
+     * @param client    The HTTP client being used.
+     * @param request   The request about to be sent to the server.
+     */
+    void prepareRequest(Client client, Request request);
+
+    /**
      * Test whether a response represents an authentication challenge.
      *
      * @param client    The HTTP client being used.
-     * @param request   The request submitted to the server.
+     * @param request   The request sent to the server.
      * @param response  The response returned by the server.
      */
     boolean isAuthenticationChallenge(Client client, Request request, Response response);
@@ -38,10 +48,10 @@ public interface AuthenticationDelegate {
      * authentication header), or by submitting a new request.
      *
      * @param client    The HTTP client being used.
-     * @param request   The request submitted to the server. The same request will be resubmitted
+     * @param request   The request sent to the server. The same request will be resent
      *                  after authentication.
      * @param response  The response returned by the server.
      */
-    Q.Promise<Response> authenticate(Client client, Request request, Response response);
+    Q.Promise<Request> authenticate(Client client, Request request, Response response);
 
 }
