@@ -20,6 +20,9 @@ import com.innerfunction.q.Q;
 
 import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An authentication delegate which performs HTTP Basic authentication.
@@ -29,9 +32,52 @@ import java.net.URL;
  */
 public abstract class BasicAuthenticationDelegate implements AuthenticationDelegate {
 
+    /**
+     * A map of previously used authentication tokens, keyed by authentication scope.
+     * This map is used to perform preemptive authentication, as described in
+     * https://tools.ietf.org/html/rfc7617#section-2.2
+     */
+    private Map<String,String> authTokensByAuthenticationScope = new HashMap<>();
+
+    /**
+     * Get the authentication scope of a request.
+     * Authentication scope is defined in RFC 7617, see link above.
+     */
+    private String getAuthenticationScope(Request request) {
+        String url = request.getURL().toString();
+        int idx = url.lastIndexOf('/');
+        return idx > -1 ? url.substring( 0, idx ) : url;
+    }
+
+    /**
+     * Add a newly used authentication token to the list of previously used tokens.
+     * This method removes any previously used entries which have the current URL as a
+     * prefix.
+     *
+     * @param request       The current request.
+     * @param authToken     The authentication token; the full Authorization header value.
+     */
+    private void addAuthTokenForURL(Request request, String authToken) {
+        String newAuthScope = getAuthenticationScope( request );
+        Set<String> keySet = authTokensByAuthenticationScope.keySet();
+        for( String key : keySet ) {
+            if( key.startsWith( newAuthScope ) ) {
+                keySet.remove( key );
+            }
+        }
+        authTokensByAuthenticationScope.put( newAuthScope, authToken );
+    }
+
     @Override
     public void prepareRequest(Client client, Request request) {
-        // TODO Pre-emptively add authentication headers; see http://hc.apache.org/httpclient-3.x/authentication.html
+        // Preemptively set the authorization token if an auth scope is found.
+        String requestAuthScope = getAuthenticationScope( request );
+        for( String authScope : authTokensByAuthenticationScope.keySet() ) {
+            if( requestAuthScope.startsWith( authScope ) ) {
+                request.setHeader("Authorization", authTokensByAuthenticationScope.get( authScope ) );
+                break;
+            }
+        }
     }
 
     @Override
@@ -58,7 +104,8 @@ public abstract class BasicAuthenticationDelegate implements AuthenticationDeleg
                 String header = "Basic " + Base64.encodeToString( authToken, Base64.NO_WRAP );
                 // Set the authentication header and return; the request will be resent
                 // with the additional header.
-                request.setHeader( "Authorization", header );
+                addAuthTokenForURL( request, header );
+                request.setHeader("Authorization", header );
                 return Q.resolve( request );
             }
             // No credentials found.
