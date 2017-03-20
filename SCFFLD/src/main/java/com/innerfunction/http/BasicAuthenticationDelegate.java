@@ -20,9 +20,6 @@ import com.innerfunction.q.Q;
 
 import java.net.PasswordAuthentication;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * An authentication delegate which performs HTTP Basic authentication.
@@ -33,11 +30,13 @@ import java.util.Set;
 public abstract class BasicAuthenticationDelegate implements AuthenticationDelegate {
 
     /**
-     * A map of previously used authentication tokens, keyed by authentication scope.
-     * This map is used to perform preemptive authentication, as described in
+     * An array of previously used authentication tokens, keyed by authentication scope.
+     * This array is used to perform preemptive authentication, as described in
      * https://tools.ietf.org/html/rfc7617#section-2.2
+     * The first column of the array holds the authentication scope, the second column holds
+     * the authentication token.
      */
-    private Map<String,String> authTokensByAuthenticationScope = new HashMap<>();
+    private String[][] authenticationScopes = new String[0][];
 
     /**
      * Get the authentication scope of a request.
@@ -59,22 +58,37 @@ public abstract class BasicAuthenticationDelegate implements AuthenticationDeleg
      */
     private void addAuthTokenForURL(Request request, String authToken) {
         String newAuthScope = getAuthenticationScope( request );
-        Set<String> keySet = authTokensByAuthenticationScope.keySet();
-        for( String key : keySet ) {
-            if( key.startsWith( newAuthScope ) ) {
-                keySet.remove( key );
+        // Search for and remove any previously set auth scopes which are superceded - i.e.
+        // contained by - the one.
+        int count = authenticationScopes.length, removed = 0;
+        for( int i = 0; i < count; i++ ) {
+            String authScope = authenticationScopes[i][0];
+            if( authScope.startsWith( newAuthScope ) ) {
+                authenticationScopes[i] = null;
+                removed++;
             }
         }
-        authTokensByAuthenticationScope.put( newAuthScope, authToken );
+        // Create a new array, put the new scope at the start and copy the remaining none
+        // deleted scopes to the end. Note that this will have the effect of moving shorter
+        // - i.e. more general - scopes to the beginning of the array.
+        String[][] updatedAuthScopes = new String[count - removed + 1][];
+        updatedAuthScopes[0] = new String[]{ newAuthScope, authToken };
+        for( int i = 0, j = 1; i < count; i++ ) {
+            if( authenticationScopes[i] != null ) {
+                updatedAuthScopes[j++] = authenticationScopes[i];
+            }
+        }
+        // Replace scopes list with updated copy.
+        authenticationScopes = updatedAuthScopes;
     }
 
     @Override
     public void prepareRequest(Client client, Request request) {
         // Preemptively set the authorization token if an auth scope is found.
         String requestAuthScope = getAuthenticationScope( request );
-        for( String authScope : authTokensByAuthenticationScope.keySet() ) {
-            if( requestAuthScope.startsWith( authScope ) ) {
-                request.setHeader("Authorization", authTokensByAuthenticationScope.get( authScope ) );
+        for( int i = 0; i < authenticationScopes.length; i++ ) {
+            if( requestAuthScope.startsWith( authenticationScopes[i][0] ) ) {
+                request.setHeader("Authorization", authenticationScopes[i][1] );
                 break;
             }
         }
