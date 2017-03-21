@@ -20,6 +20,9 @@ import android.util.Log;
 import com.innerfunction.util.Regex;
 
 import org.json.simple.JSONValue;
+import org.msgpack.core.MessagePack;
+import org.msgpack.core.MessageUnpacker;
+import org.msgpack.value.ImmutableValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -167,6 +170,21 @@ public class Response {
             String json = getBody();
             if( json != null ) {
                 return JSONValue.parse( json );
+            }
+        }
+        else if( "application/msgpack".equals( contentType ) ) {
+            try {
+                MessageUnpacker unpacker = new MessagePack.UnpackerConfig()
+                    .withStringDecoderBufferSize( 64 * 1024 ) // 64KB string buffer
+                    .newUnpacker( getRawBody() );
+                // The following is utterly perverse, but given the complexity of the
+                // Android msgpack API seems to be the simplest way to get what we want
+                // here.
+                String json = unpacker.unpackValue().toJson();
+                return JSONValue.parse( json );
+            }
+            catch(IOException e) {
+                Log.e( Tag, "Unpacking msgpack", e );
             }
         }
         else if( "application/x-www-form-urlencoded".equals( contentType ) ) {
