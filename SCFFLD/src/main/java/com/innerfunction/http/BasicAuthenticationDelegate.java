@@ -34,9 +34,13 @@ public abstract class BasicAuthenticationDelegate implements AuthenticationDeleg
      * This array is used to perform preemptive authentication, as described in
      * https://tools.ietf.org/html/rfc7617#section-2.2
      * The first column of the array holds the authentication scope, the second column holds
-     * the authentication token.
+     * the authentication realm, and the third column holds the authentication token.
      */
     private String[][] authenticationScopes = new String[0][];
+
+    static final int AuthScopeField = 0;
+    static final int AuthRealmField = 1;
+    static final int AuthTokenField = 2;
 
     /**
      * Get the authentication scope of a request.
@@ -54,15 +58,17 @@ public abstract class BasicAuthenticationDelegate implements AuthenticationDeleg
      * prefix.
      *
      * @param request       The current request.
+     * @param authRealm     The authentication realm, as specified in the authentication
+     *                      challenge returned by the server.
      * @param authToken     The authentication token; the full Authorization header value.
      */
-    private void addAuthTokenForURL(Request request, String authToken) {
+    private void addAuthTokenForURL(Request request, String authRealm, String authToken) {
         String newAuthScope = getAuthenticationScope( request );
         // Search for and remove any previously set auth scopes which are superceded - i.e.
         // contained by - the one.
         int count = authenticationScopes.length, removed = 0;
         for( int i = 0; i < count; i++ ) {
-            String authScope = authenticationScopes[i][0];
+            String authScope = authenticationScopes[i][AuthScopeField];
             if( authScope.startsWith( newAuthScope ) ) {
                 authenticationScopes[i] = null;
                 removed++;
@@ -72,7 +78,7 @@ public abstract class BasicAuthenticationDelegate implements AuthenticationDeleg
         // deleted scopes to the end. Note that this will have the effect of moving shorter
         // - i.e. more general - scopes to the beginning of the array.
         String[][] updatedAuthScopes = new String[count - removed + 1][];
-        updatedAuthScopes[0] = new String[]{ newAuthScope, authToken };
+        updatedAuthScopes[0] = new String[]{ newAuthScope, authRealm, authToken };
         for( int i = 0, j = 1; i < count; i++ ) {
             if( authenticationScopes[i] != null ) {
                 updatedAuthScopes[j++] = authenticationScopes[i];
@@ -82,13 +88,38 @@ public abstract class BasicAuthenticationDelegate implements AuthenticationDeleg
         authenticationScopes = updatedAuthScopes;
     }
 
+    /**
+     * Remove any cached authentication tokens for a specific realm.
+     * @param realm An authentication realm.
+     */
+    public void removeAuthTokensForRealm(String realm) {
+        int removed = 0;
+        // Search for cached tokens belonging to the specified realm.
+        for( int i = 0; i < authenticationScopes.length; i++ ) {
+            if( authenticationScopes[i][AuthRealmField].equals( realm ) ) {
+                authenticationScopes[i] = null;
+                removed++;
+            }
+        }
+        if( removed > 0 ) {
+            // Remove deleted entries from the cache array.
+            String[][] updatedAuthScopes = new String[authenticationScopes.length - removed][];
+            for( int i = 0, j = 0; i < authenticationScopes.length; i++ ) {
+                if( authenticationScopes[i] != null ) {
+                    updatedAuthScopes[j++] = authenticationScopes[i];
+                }
+            }
+            authenticationScopes = updatedAuthScopes;
+        }
+    }
+
     @Override
     public void prepareRequest(Client client, Request request) {
         // Preemptively set the authorization token if an auth scope is found.
         String requestAuthScope = getAuthenticationScope( request );
         for( int i = 0; i < authenticationScopes.length; i++ ) {
-            if( requestAuthScope.startsWith( authenticationScopes[i][0] ) ) {
-                request.setHeader("Authorization", authenticationScopes[i][1] );
+            if( requestAuthScope.startsWith( authenticationScopes[i][AuthScopeField] ) ) {
+                request.setHeader("Authorization", authenticationScopes[i][AuthTokenField] );
                 break;
             }
         }
@@ -104,8 +135,11 @@ public abstract class BasicAuthenticationDelegate implements AuthenticationDeleg
         String method = response.getAuthMethod();
         // Check that we're dealing with basic authentication.
         if( "Basic".equals( method ) ) {
-            // Try to fetch credentials for the authentication realm.
+            // Read the realm from the authentication challenge.
             String realm = response.getAuthRealm();
+            // Remove any cached tokens for the realm, in case of authentication failure.
+            removeAuthTokensForRealm( realm );
+            // Try to fetch credentials for the authentication realm.
             URL url = request.getURL();
             PasswordAuthentication credentials = getCredentials( realm, url );
             if( credentials != null ) {
@@ -118,7 +152,7 @@ public abstract class BasicAuthenticationDelegate implements AuthenticationDeleg
                 String header = "Basic " + Base64.encodeToString( authToken, Base64.NO_WRAP );
                 // Set the authentication header and return; the request will be resent
                 // with the additional header.
-                addAuthTokenForURL( request, header );
+                addAuthTokenForURL( request, realm, header );
                 request.setHeader("Authorization", header );
                 return Q.resolve( request );
             }
