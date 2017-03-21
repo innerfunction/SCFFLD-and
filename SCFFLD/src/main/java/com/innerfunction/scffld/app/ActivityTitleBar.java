@@ -84,16 +84,16 @@ public class ActivityTitleBar implements TitleBar {
             if( image != null ) {
                 menuItem.setIcon( image );
                 menuItem.setShowAsAction( MenuItem.SHOW_AS_ACTION_ALWAYS );
-                menuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        String action = rightButton.getAction();
-                        ViewController viewController = rightButton.getOwner();
-                        viewController.postMessage( action );
-                        return false;
-                    }
-                });
             }
+            menuItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    String action = rightButton.getAction();
+                    ViewController viewController = rightButton.getOwner();
+                    viewController.postMessage( action );
+                    return false;
+                }
+            });
         }
     }
 }

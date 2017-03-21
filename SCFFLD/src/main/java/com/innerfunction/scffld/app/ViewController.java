@@ -81,7 +81,7 @@ public class ViewController extends FrameLayout implements MessageReceiver, Mess
     /** A list of view behaviours. */
     private List<ViewControllerBehaviour> behaviours = new ArrayList<>();
     /** The container that instantiated this view. */
-    private Container iocContainer;
+    protected Container iocContainer;
 
     public ViewController(Context context) {
         super( context );

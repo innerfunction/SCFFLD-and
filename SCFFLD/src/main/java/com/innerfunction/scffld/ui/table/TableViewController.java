@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.innerfunction.scffld.Configuration;
 import com.innerfunction.scffld.Container;
 import com.innerfunction.scffld.IOCConfigurationAware;
-import com.innerfunction.scffld.IOCContainerAware;
 import com.innerfunction.scffld.Message;
 import com.innerfunction.scffld.app.AppContainer;
 import com.innerfunction.scffld.app.ViewController;
@@ -42,12 +41,10 @@ import com.nakardo.atableview.view.ATableViewCell;
  * A configurable table view component.
  * Attached by juliangoacher on 20/05/16.
  */
-public class TableViewController extends ViewController implements IOCContainerAware, IOCConfigurationAware {
+public class TableViewController extends ViewController implements IOCConfigurationAware {
 
     static final String Tag = TableViewController.class.getSimpleName();
 
-    /** The container that instantiated this view. */
-    private Container iocContainer;
     /** The table view. */
     protected ATableView tableView;
     /** The data displayed by the table. */
@@ -81,11 +78,6 @@ public class TableViewController extends ViewController implements IOCContainerA
         super( context );
         setHideTitleBar( false );
         this.tableData = new TableData( context );
-    }
-
-    @Override
-    public void setIOCContainer(Container container) {
-        this.iocContainer = container;
     }
 
     @Override
