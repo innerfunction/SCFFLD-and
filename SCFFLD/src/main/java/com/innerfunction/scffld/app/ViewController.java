@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class for displaying and controlling PTTN views.
+ * A class for displaying and controlling SCFFLD views.
  * This class should be used in preference to Fragment (or its ViewFragment subclass) because of
  * well documented problems with using fragments, especially when nested within one another.
  * The ViewController class provides a simplified version of the Fragment lifecycle; a lot of the
