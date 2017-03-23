@@ -13,6 +13,7 @@
 // limitations under the License
 package com.innerfunction.scffld.app;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -55,6 +56,9 @@ public class ActivityTitleBar implements TitleBar {
         int textColor = state.getTitleBarTextColor();
         if( textColor != 0 ) {
             toolbar.setTitleTextColor( textColor );
+        }
+        else {
+            toolbar.setTitleTextColor( Color.BLACK );
         }
         final TitleBarButton leftButton = state.getLeftTitleBarButton();
         if( leftButton != null ) {
