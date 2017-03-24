@@ -217,15 +217,14 @@ public class CompoundURI {
             for (String paramName : paramNames) {
                 CompoundURI paramValue = parameters.get(paramName);
                 serializedParams.append('+');
-                serializedParams.append(Uri.encode(paramName));
+                serializedParams.append( Uri.encode( paramName ) );
                 serializedParams.append("@[");
-                serializedParams.append(paramValue.canonicalForm());
+                serializedParams.append( paramValue.canonicalForm() );
                 serializedParams.append(']');
             }
-            String frag = this.fragment == null ? "" : String.format("#%s", Uri.encode(this.fragment));
-            String form = this.format == null ? "" : String.format("|%s", Uri.encode(this.format));
-            _canonicalForm = String.format("%s:%s%s%s",
-                Uri.encode(scheme), Uri.encode(name), frag, serializedParams, form);
+            String frag = this.fragment == null ? "" : String.format("#%s", Uri.encode( this.fragment ) );
+            String form = this.format == null ? "" : String.format("|%s", Uri.encode( this.format ) );
+            _canonicalForm = String.format("%s:%s%s%s", scheme, name, frag, serializedParams, form );
         }
         return _canonicalForm;
     }
