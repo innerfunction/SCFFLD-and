@@ -42,7 +42,6 @@ public class Display {
      * @return      A pixel value.
      */
     public static int dpToPx(float dp) {
-        //float px = TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, dp, getDisplayMetrics() );
         float px = dp * (getDisplayMetrics().densityDpi / 160f);
         return Math.round( px );
     }
@@ -63,8 +62,7 @@ public class Display {
      * @return  A scaled pixel value.
      */
     public static int ptToSp(float pt) {
-        float px = dpToPx( pt * 1.75f );
-        //float sp = TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_SP, pt, getDisplayMetrics() );
+        float px = dpToPx( pt * 1.17f );
         float sp = px / getDisplayMetrics().scaledDensity; // see http://stackoverflow.com/a/9219417
         return Math.round( sp );
     }
@@ -84,7 +82,6 @@ public class Display {
      * @return      A DP value.
      */
     public static int pxToDp(float px) {
-        //float dp = TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_PX, px, getDisplayMetrics() );
         float dp = px / (getDisplayMetrics().densityDpi / 160f);
         return Math.round( dp );
     }

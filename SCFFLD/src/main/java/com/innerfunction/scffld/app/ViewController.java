@@ -331,8 +331,13 @@ public class ViewController extends FrameLayout implements MessageReceiver, Mess
         }
     }
 
-    public void showToast(String message) {
-        Toast.makeText( getActivity(), message, Toast.LENGTH_LONG ).show();
+    public void showToast(final String message) {
+        view.post( new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText( getActivity(), message, Toast.LENGTH_LONG ).show();
+            }
+        });
     }
 
     @Override
