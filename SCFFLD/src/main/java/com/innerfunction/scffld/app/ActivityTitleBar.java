@@ -60,7 +60,9 @@ public class ActivityTitleBar implements TitleBar {
         else {
             toolbar.setTitleTextColor( Color.BLACK );
         }
+
         final TitleBarButton leftButton = state.getLeftTitleBarButton();
+        boolean showBackButton = state.getShowBackButton();
         if( leftButton != null ) {
             actionBar.setHomeButtonEnabled( true );
             actionBar.setDisplayUseLogoEnabled( true );
@@ -74,11 +76,18 @@ public class ActivityTitleBar implements TitleBar {
                 }
             });
         }
+        else if( showBackButton ) {
+            actionBar.setDisplayHomeAsUpEnabled( true );
+            actionBar.setHomeButtonEnabled( true );
+            actionBar.setDisplayUseLogoEnabled( true );
+        }
         else {
+            actionBar.setDisplayHomeAsUpEnabled( false );
             actionBar.setHomeButtonEnabled( false );
             actionBar.setDisplayUseLogoEnabled( false );
             toolbar.setNavigationIcon( null );
         }
+
         final TitleBarButton rightButton = state.getRightTitleBarButton();
         Menu menu = toolbar.getMenu();
         menu.clear();

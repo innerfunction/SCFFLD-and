@@ -25,6 +25,7 @@ public class TitleBarState {
     private String title = "";
     private int color;
     private int textColor;
+    private boolean showBackButton;
     private TitleBarButton leftButton;
     private TitleBarButton rightButton;
 
@@ -67,6 +68,14 @@ public class TitleBarState {
 
     public int getTitleBarColor() {
         return color;
+    }
+
+    public void setShowBackButton(boolean showBackButton) {
+        this.showBackButton = showBackButton;
+    }
+
+    public boolean getShowBackButton() {
+        return showBackButton;
     }
 
     public void setLeftTitleBarButton(TitleBarButton button) {

@@ -41,6 +41,9 @@ public class VirtualTitleBar extends TitleBarState implements TitleBar {
         return notZero( otherState.getTitleBarTextColor(), super.getTitleBarTextColor() );
     }
 
+    public boolean getShowBackButton() {
+        return (otherState != null && otherState.getShowBackButton()) || super.getShowBackButton();
+    }
     public TitleBarButton getLeftTitleBarButton() {
         return notNull( otherState.getLeftTitleBarButton(), super.getLeftTitleBarButton() );
     }

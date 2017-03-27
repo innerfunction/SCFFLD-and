@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ViewFlipper;
 
 import com.innerfunction.scffld.R;
@@ -132,6 +133,15 @@ public abstract class SCFFLDActivity<T> extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent result) {
         activityResultManager.onActivityResult( requestCode, resultCode, result );
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if( menuItem.getItemId() == android.R.id.home ) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected( menuItem );
     }
 
     /**

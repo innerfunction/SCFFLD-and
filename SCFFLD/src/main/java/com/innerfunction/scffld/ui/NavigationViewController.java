@@ -88,7 +88,6 @@ public class NavigationViewController extends ViewController {
     static {
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
             NavigateForwardTransition = new Slide( Gravity.RIGHT );
-            //NavigateBackTransition = new Slide( Gravity.LEFT );
             NavigateBackTransition = new Fade();
         }
     }
@@ -163,9 +162,11 @@ public class NavigationViewController extends ViewController {
             addChildViewController( newView );
             views.push( newView );
         }
-        // Set the runnable flag for each view.
+        // Set the runnable flag and back button state for each view.
         for( i = 0; i < views.size() - 1; i++ ) {
-            views.get( i ).setRunnable( false );
+            ViewController view = views.get( i );
+            view.getTitleBarState().setShowBackButton( i > 0 );
+            view.setRunnable( false );
         }
         // Ensure that the top view matches this view's state.
         topView = views.getTopView();
@@ -177,6 +178,7 @@ public class NavigationViewController extends ViewController {
     }
 
     public void pushView(ViewController newView) {
+        newView.getTitleBarState().setShowBackButton( views.size() > 0 );
         // Transition to the new view.
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
             TransitionManager.beginDelayedTransition( layout, NavigateForwardTransition );

@@ -37,7 +37,9 @@ import java.util.Map;
  */
 public abstract class Request {
 
-    static final int DataBufferSize = 4096;
+    static final int DataBufferSize = 4096;     // 4k
+    static final int ConnectTimeout = 10000;    // 10s
+    static final int ReadTimeout = 30000;       // 30s
 
     /** The URL being connected to. */
     private URL url;
@@ -92,8 +94,8 @@ public abstract class Request {
         try {
             connection.setRequestMethod( method );
             // TODO Some of these connection settings should be configured via properties on the client.
-            connection.setConnectTimeout( 5000 );
-            connection.setReadTimeout( 5000 );
+            connection.setConnectTimeout( ConnectTimeout );
+            connection.setReadTimeout( ReadTimeout );
             connection.setDoInput( true );
             addCookies( connection );
             if( headers != null ) {

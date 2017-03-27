@@ -30,6 +30,7 @@ public class SCFFLDApplication extends Application {
 
     static final String Tag = SCFFLDApplication.class.getSimpleName();
 
+    static final boolean WaitForDebugger = false;
     static final boolean TraceEnabled = false;
 
     public SCFFLDApplication() {}
@@ -45,6 +46,9 @@ public class SCFFLDApplication extends Application {
                 if( 0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE) ) {
                     WebView.setWebContentsDebuggingEnabled( true );
                 }
+            }
+            if( WaitForDebugger ) {
+                android.os.Debug.waitForDebugger();
             }
             if( TraceEnabled) {
                 android.os.Debug.startMethodTracing("scffld-trace");
