@@ -132,13 +132,11 @@ public abstract class Request {
      */
     protected InputStream openInputStream(HttpURLConnection connection) throws IOException {
         InputStream in;
-        try {
+        int responseCode = connection.getResponseCode();
+        if( responseCode < 400 ) {
             in = connection.getInputStream();
         }
-        catch(IOException e) {
-            if( connection.getResponseCode() == -1 ) {
-                throw e;
-            }
+        else {
             in = connection.getErrorStream();
         }
         return new BufferedInputStream( in, DataBufferSize );
