@@ -47,8 +47,8 @@ public abstract class Request {
     private URI uri;
     /** The HTTP method, e.g. GET, POST. */
     private String method;
-    /** Optional request body data. */
-    private byte[] body;
+    /** Optional request body. */
+    private RequestBody body;
     /** Optional additional request headers. */
     private Map<String,Object> headers;
 
@@ -69,12 +69,7 @@ public abstract class Request {
     }
 
     /** Set the request body. */
-    public void setBody(String body) {
-        this.body = body.getBytes();
-    }
-
-    /** Set the request body data. */
-    public void setBody(byte[] body) {
+    public void setBody(RequestBody body) {
         this.body = body;
     }
 
@@ -105,9 +100,9 @@ public abstract class Request {
             }
             if( body != null ) {
                 connection.setDoOutput( true ); // NOTE This call forces the request method to POST
-                connection.setFixedLengthStreamingMode( body.length );
+                body.configureConnection( connection );
                 BufferedOutputStream out = new BufferedOutputStream( connection.getOutputStream() );
-                out.write( body );
+                body.write( out );
                 out.flush();
             }
             Response response = readResponse( connection );

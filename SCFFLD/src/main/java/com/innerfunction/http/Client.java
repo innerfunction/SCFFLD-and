@@ -202,13 +202,7 @@ public class Client {
     public Q.Promise<Response> post(String url, Map<String,Object> data) {
         try {
             Request request = new DataRequest( url, "POST" );
-            request.setBody( makeQueryString( data ) );
-            request.setHeaders( m(
-                kv( "Content-Type", "application/x-www-form-urlencoded" ),
-                // The following is necessary because the string version of setBody is used above,
-                // which converts the body string to a byte array using the platform default encoding.
-                kv( "charset", Charset.defaultCharset().name() )
-            ) );
+            request.setBody( RequestBody.makeBodyForData( data ) );
             return send( request );
         }
         catch(MalformedURLException e) {
