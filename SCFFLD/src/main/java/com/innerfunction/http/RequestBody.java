@@ -119,6 +119,17 @@ public abstract class RequestBody {
                 i++;
             }
             // Generate a part boundary.
+            // Note the logic behind generating the boundary this way: By using a random string,
+            // there is a very, very, very, very small chance that the data being sent in the post
+            // will include the same random string. If this does happen, then the request will
+            // likely fail due to a server reported error (i.e. invalid request because the server
+            // can't parse it). The client will then receive and handle this error, and then has
+            // the option to try to simply resubmit the request, at which point a new boundary
+            // will be generated, and the chance of the same error occurring is very very low.
+            // During normal operation, clients are more likely to encounter failed requests due
+            // to other network problems - timeouts, DNS failures etc. - so this approach seems
+            // to be a reasonable compromise between implementation simplicity and operational
+            // robustness.
             boundary = new byte[32];
             boundary[0] = '-';
             boundary[1] = '-';
